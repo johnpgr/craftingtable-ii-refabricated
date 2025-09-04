@@ -13,6 +13,7 @@ object CraftingTableIIModClient : ClientModInitializer {
         CraftingTableIIScreen.register()
         CraftingTableIIEntityModel.register()
         CraftingTableIIEntityRenderer.register()
-        CraftingTableIIItemDynamicRenderer.register()
+        // Note: Dynamic item rendering registration is handled differently in 1.21.4+
+        // CraftingTableIIItemDynamicRenderer.register()
     }
 }
