@@ -2,6 +2,8 @@
 
 This branch contains the 1.21.4 upgrade for CraftingTable II Refabricated.
 
+> **Note**: This work should be merged into a new `1.21.4` branch as requested in the issue.
+
 ## Key Changes Made
 
 ### API Updates
