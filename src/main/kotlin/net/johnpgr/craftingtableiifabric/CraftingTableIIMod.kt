@@ -2,7 +2,7 @@ package net.johnpgr.craftingtableiifabric
 
 import net.fabricmc.api.ModInitializer
 import net.johnpgr.craftingtableiifabric.block.CraftingTableIIBlock
-import net.johnpgr.craftingtableiifabric.entity.CraftingTableIIEntity
+import net.johnpgr.craftingtableiifabric.block.entity.CraftingTableIIBlockEntity
 import net.johnpgr.craftingtableiifabric.network.CraftingTableIIPacket
 import net.johnpgr.craftingtableiifabric.screen.CraftingTableIIScreenHandler
 import net.johnpgr.craftingtableiifabric.util.BlockEntityFactory
@@ -16,13 +16,13 @@ object CraftingTableIIMod : ModInitializer {
     val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID)
     val BLOCK = CraftingTableIIBlock()
     val SCREEN_HANDLER = BlockScreenHandlerFactory.createHandlerType(::CraftingTableIIScreenHandler)
-    val ENTITY_TYPE = BlockEntityFactory.createEntityType<CraftingTableIIEntity>(BLOCK)
+    val ENTITY_TYPE = BlockEntityFactory.createEntityType<CraftingTableIIBlockEntity>(BLOCK)
 
     fun id(name: String) = Identifier.of(MOD_ID, name)!!
 
     override fun onInitialize() {
         CraftingTableIIBlock.register()
-        CraftingTableIIEntity.register()
+        CraftingTableIIBlockEntity.register()
         CraftingTableIIScreenHandler.register()
         CraftingTableIIPacket.register()
     }

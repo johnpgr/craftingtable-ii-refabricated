@@ -1,4 +1,4 @@
-package net.johnpgr.craftingtableiifabric.entity
+package net.johnpgr.craftingtableiifabric.block.entity
 
 import net.johnpgr.craftingtableiifabric.CraftingTableIIMod
 import net.johnpgr.craftingtableiifabric.block.CraftingTableIIBlock
@@ -19,7 +19,7 @@ import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class CraftingTableIIEntity(
+class CraftingTableIIBlockEntity(
     pos: BlockPos,
     state: BlockState,
 ) : BlockEntity(CraftingTableIIMod.ENTITY_TYPE, pos, state), Inventory {
@@ -43,7 +43,7 @@ class CraftingTableIIEntity(
             world: World,
             pos: BlockPos,
             state: BlockState,
-            entity: CraftingTableIIEntity
+            entity: CraftingTableIIBlockEntity
         ) {
             val player = world.getClosestPlayer(
                 pos.x.toDouble(),

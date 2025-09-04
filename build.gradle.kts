@@ -49,24 +49,23 @@ val environment: Map<String, String> = System.getenv()
 val releaseName = "${
     name.split("-").joinToString(" ") {
         if (it.length == 2) it.uppercase()
-        else it.capitalize()
+        else it.replaceFirstChar { char -> char.uppercase() }
     }
 } ${(version as String).split("+")[0]}"
 val releaseType = "RELEASE"
-val releaseFile = "${buildDir}/libs/${base.archivesName.get()}-${version}.jar"
+val releaseFile = "${layout.buildDirectory.get()}/libs/${base.archivesName.get()}-${version}.jar"
 val cfGameVersion = project["minecraft_version"]
 
 configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 tasks.compileKotlin {
-    kotlinOptions {
-        jvmTarget = "17"
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }
 }
-
 
 base {
     archivesName = project["archives_base_name"]
@@ -74,29 +73,18 @@ base {
 
 repositories {
     // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${project["minecraft_version"]}")
     mappings("net.fabricmc:yarn:${project["yarn_mappings"]}:v2")
     modImplementation("net.fabricmc:fabric-loader:${project["loader_version"]}")
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project["fabric_version"]}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project["fabric_kotlin_version"]}")
-    // Uncomment the following line to enable the deprecated Fabric API modules.
-    // These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
-    // modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 }
 
 tasks.processResources {
     inputs.property("version", project.version)
-
     filesMatching("fabric.mod.json") {
         expand(mutableMapOf("version" to project.version))
     }
@@ -104,13 +92,10 @@ tasks.processResources {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(17)
+    options.release.set(21)
 }
 
 java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
     withSourcesJar()
 }
 
@@ -120,8 +105,7 @@ tasks.jar {
     }
 }
 
-//Github publishing
-task("github") {
+tasks.register("github") {
     dependsOn(tasks.remapJar)
     group = "upload"
 
@@ -141,19 +125,14 @@ task("github") {
     }
 }
 
-//Modrinth publishing
 modrinth {
     environment["MODRINTH_TOKEN"]?.let { token.set(it) }
-
     projectId.set(project["modrinth_id"])
     changelog.set(getChangeLog())
-
     versionNumber.set(version as String)
     versionName.set(releaseName)
-    versionType.set(releaseType.toLowerCase())
-
+    versionType.set(releaseType.lowercase())
     uploadFile.set(tasks.remapJar.get())
-
     gameVersions.add(project["minecraft_version"])
     loaders.add("fabric")
 
@@ -172,7 +151,7 @@ curseforge {
     project(closureOf<CurseProject> {
         id = project["curseforge_id"]
         changelog = getChangeLog()
-        releaseType = this@Build_gradle.releaseType.toLowerCase()
+        releaseType = this@Build_gradle.releaseType.lowercase()
         addGameVersion(cfGameVersion)
         addGameVersion("Fabric")
 
@@ -187,11 +166,9 @@ curseforge {
         afterEvaluate {
             uploadTask.dependsOn("remapJar")
         }
-
     })
 
     options(closureOf<Options> {
         forgeGradleIntegration = false
     })
 }
-

@@ -1,4 +1,4 @@
-package net.johnpgr.craftingtableiifabric.entity
+package net.johnpgr.craftingtableiifabric.block.entity
 
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -10,46 +10,46 @@ import net.minecraft.client.render.WorldRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
+import net.minecraft.client.texture.SpriteAtlasTexture
 import net.minecraft.client.util.SpriteIdentifier
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.state.property.Properties
-import net.minecraft.util.Identifier
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.RotationAxis
 
 @Environment(EnvType.CLIENT)
-class CraftingTableIIEntityRenderer(arg: BlockEntityRendererFactory.Context) :
-    BlockEntityRenderer<CraftingTableIIEntity> {
+class CraftingTableIIBlockEntityRenderer(arg: BlockEntityRendererFactory.Context) :
+    BlockEntityRenderer<CraftingTableIIBlockEntity> {
     companion object {
         fun register() {
             BlockEntityRendererFactories.register(CraftingTableIIMod.ENTITY_TYPE) {
-                CraftingTableIIEntityRenderer(it)
+                CraftingTableIIBlockEntityRenderer(it)
             }
         }
     }
 
+    @Suppress("DEPRECATION")
     private val texture = SpriteIdentifier(
-        PlayerScreenHandler.BLOCK_ATLAS_TEXTURE,
-        Identifier.of(CraftingTableIIMod.MOD_ID + ":block/craftingtableii")!!
+        SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+        CraftingTableIIMod.id("block/craftingtableii")
     )
     private val table =
-        arg.getLayerModelPart(CraftingTableIIEntityModel.tableModelLayer)
+        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.tableModelLayer)
     private val door =
-        arg.getLayerModelPart(CraftingTableIIEntityModel.doorModelLayer)
+        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorModelLayer)
     private val doorSide =
-        arg.getLayerModelPart(CraftingTableIIEntityModel.doorSideModelLayer)
+        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorSideModelLayer)
     private val doorSide1 =
-        arg.getLayerModelPart(CraftingTableIIEntityModel.doorSide1ModelLayer)
+        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorSide1ModelLayer)
     private val doorTopSide =
-        arg.getLayerModelPart(CraftingTableIIEntityModel.doorTopSideModelLayer)
+        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorTopSideModelLayer)
     private val doorTopSide1 =
-        arg.getLayerModelPart(CraftingTableIIEntityModel.doorTopSide1ModelLayer)
+        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorTopSide1ModelLayer)
     private val book =
-        arg.getLayerModelPart(CraftingTableIIEntityModel.bookModelLayer)
+        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.bookModelLayer)
 
     override fun render(
-        entity: CraftingTableIIEntity,
+        entity: CraftingTableIIBlockEntity,
         tickDelta: Float,
         matrices: MatrixStack,
         vertexConsumers: VertexConsumerProvider,
@@ -72,12 +72,13 @@ class CraftingTableIIEntityRenderer(arg: BlockEntityRendererFactory.Context) :
                 entity.pos.up()
             )
             else light
-        val rotation =
-            blockState.get(Properties.HORIZONTAL_FACING).asRotation() * 89f
+
+        val direction = blockState.get(Properties.HORIZONTAL_FACING)
+        val degrees = direction.positiveHorizontalDegrees
 
         matrices.push()
         matrices.translate(0.5, 1.0, 0.5)
-        matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(-rotation))
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(degrees))
         matrices.scale(-1f, -1f, 1f)
 
         this.renderModels(

@@ -22,7 +22,7 @@ data class CraftingTableIIPacket(
         val PACKET_CODEC = PacketCodec.tuple(
             NetworkRecipeId.PACKET_CODEC, CraftingTableIIPacket::recipe,
             PacketCodecs.INTEGER, CraftingTableIIPacket::syncId,
-            PacketCodecs.BOOL, CraftingTableIIPacket::quickCraft,
+            PacketCodecs.BOOLEAN, CraftingTableIIPacket::quickCraft,
             ::CraftingTableIIPacket,
         )
 

@@ -3,7 +3,7 @@ package net.johnpgr.craftingtableiifabric.screen
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.johnpgr.craftingtableiifabric.CraftingTableIIMod
 import net.johnpgr.craftingtableiifabric.block.CraftingTableIIBlock
-import net.johnpgr.craftingtableiifabric.entity.CraftingTableIIEntity
+import net.johnpgr.craftingtableiifabric.block.entity.CraftingTableIIBlockEntity
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIIInventory
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIISlot
 import net.johnpgr.craftingtableiifabric.network.CraftingTableIIPacket
@@ -33,7 +33,7 @@ import net.minecraft.world.World
 class CraftingTableIIScreenHandler(
     syncId: Int,
     playerInventory: PlayerInventory,
-    entity: CraftingTableIIEntity,
+    entity: CraftingTableIIBlockEntity,
     private val context: ScreenHandlerContext,
 ) : AbstractCraftingScreenHandler(
     CraftingTableIIMod.SCREEN_HANDLER,

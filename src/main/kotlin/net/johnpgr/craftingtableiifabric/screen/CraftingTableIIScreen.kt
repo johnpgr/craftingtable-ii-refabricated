@@ -15,7 +15,10 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.slot.Slot
 import net.minecraft.text.Text
 import net.minecraft.util.math.MathHelper
+import java.util.stream.Stream
 
+
+@Suppress("DEPRECATION")
 @Environment(EnvType.CLIENT)
 class CraftingTableIIScreen(
     screenHandler: CraftingTableIIScreenHandler, playerInventory: PlayerInventory, title: Text
@@ -31,6 +34,8 @@ class CraftingTableIIScreen(
                 CraftingTableIIMod.SCREEN_HANDLER, ::CraftingTableIIScreen
             )
         }
+
+        fun <T> Stream<T>.firstOrNull(): T? = this.findFirst().orElse(null)
     }
 
 
@@ -224,18 +229,20 @@ class CraftingTableIIScreen(
                 val recipe = slot.recipe ?: continue
                 val ingredientStacks = arrayListOf<ItemStack>()
 
-                //TODO: Find a way to draw all matching stacks. Maybe a timer that loops through the list of matching stacks
+                // TODO: Find a way to draw all matching stacks. Maybe a timer that loops through the list of matching stacks
                 for (ingredient in recipe.ingredients) {
-                    if (ingredient.matchingItems.isEmpty()) continue
+                    if (ingredient.isEmpty) continue
+                    val entry = ingredient.matchingItems.firstOrNull() ?: continue
+                    val item = entry.value()
+                    val itemStack = item.defaultStack
 
-                    val item = ingredient.matchingItems.first().value()
                     val index = ingredientStacks.indexOfFirst { it.item == item }
 
                     if (index == -1) {
-                        ingredientStacks.add(item.defaultStack.copy())
+                        ingredientStacks.add(itemStack.copy())
                         continue
                     }
-                    ingredientStacks[index].count += item.defaultStack.count
+                    ingredientStacks[index].count += itemStack.count
                 }
 
                 ingredientStacks.forEachIndexed { r, stack ->

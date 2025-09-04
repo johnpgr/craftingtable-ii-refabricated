@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "craftingtableiifabric:block/crafting_table_ii",
+    "model": {
+      "type": "craftingtableiifabric:crafting_table_ii",
+      "texture": "craftingtableiifabric:block/crafting_table_ii"
+    }
+  }
+}

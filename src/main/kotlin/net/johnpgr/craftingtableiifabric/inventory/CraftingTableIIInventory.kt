@@ -1,13 +1,13 @@
 package net.johnpgr.craftingtableiifabric.inventory
 
-import net.johnpgr.craftingtableiifabric.entity.CraftingTableIIEntity
+import net.johnpgr.craftingtableiifabric.block.entity.CraftingTableIIBlockEntity
 import net.johnpgr.craftingtableiifabric.recipe.CraftingTableIIRecipeManager
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
 
 class CraftingTableIIInventory(
-    val entity: CraftingTableIIEntity,
+    val entity: CraftingTableIIBlockEntity,
 ) : Inventory {
     companion object {
         const val COLS = 8

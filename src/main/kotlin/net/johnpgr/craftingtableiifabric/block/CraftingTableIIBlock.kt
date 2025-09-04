@@ -3,7 +3,7 @@ package net.johnpgr.craftingtableiifabric.block
 import com.mojang.serialization.MapCodec
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.johnpgr.craftingtableiifabric.CraftingTableIIMod
-import net.johnpgr.craftingtableiifabric.entity.CraftingTableIIEntity
+import net.johnpgr.craftingtableiifabric.block.entity.CraftingTableIIBlockEntity
 import net.johnpgr.craftingtableiifabric.screen.CraftingTableIIScreenHandler
 import net.johnpgr.craftingtableiifabric.util.BlockScreenHandlerFactory
 import net.minecraft.block.Block
@@ -48,19 +48,15 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
             Registry.register(Registries.BLOCK, ID, CraftingTableIIMod.BLOCK)
 
             Registry.register(
-                Registries.ITEM,
-                ITEM_REGISTRY_KEY,
-                BlockItem(
+                Registries.ITEM, ITEM_REGISTRY_KEY, BlockItem(
                     CraftingTableIIMod.BLOCK,
                     Item.Settings().useBlockPrefixedTranslationKey().registryKey(ITEM_REGISTRY_KEY)
                 )
             )
 
-            ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL)
-                .register { content ->
+            ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register { content ->
                     content.addAfter(
-                        Items.CRAFTING_TABLE,
-                        CraftingTableIIMod.BLOCK
+                        Items.CRAFTING_TABLE, CraftingTableIIMod.BLOCK
                     )
                 }
         }
@@ -70,26 +66,22 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
         stateManager.add(Properties.HORIZONTAL_FACING)
     }
 
-    //FIXME: Maybe this is an unnecessary hack
+    // FIXME: Maybe this is an unnecessary hack
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState {
+        val direction = ctx.horizontalPlayerFacing.rotateYCounterclockwise()
+
         return defaultState.with(
             Properties.HORIZONTAL_FACING,
-            if (ctx.horizontalPlayerFacing.rotateYCounterclockwise() == Direction.NORTH ||
-                ctx.horizontalPlayerFacing.rotateYCounterclockwise() == Direction.SOUTH
-            )
-                ctx.horizontalPlayerFacing.rotateYCounterclockwise().opposite
-            else
-                ctx.horizontalPlayerFacing.rotateYCounterclockwise()
+            if (direction == Direction.NORTH || direction == Direction.SOUTH) direction.opposite
+            else direction
         )
     }
 
     override fun rotate(
-        state: BlockState,
-        rotation: BlockRotation
+        state: BlockState, rotation: BlockRotation
     ): BlockState {
         return state.with(
-            Properties.HORIZONTAL_FACING,
-            rotation.rotate(state[Properties.HORIZONTAL_FACING])
+            Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING])
         )
     }
 
@@ -98,7 +90,7 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
     }
 
     override fun getRenderType(state: BlockState): BlockRenderType {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED
+        return BlockRenderType.MODEL
     }
 
     override fun hasSidedTransparency(state: BlockState): Boolean {
@@ -106,28 +98,21 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
     }
 
     override fun getCollisionShape(
-        state: BlockState,
-        view: BlockView,
-        pos: BlockPos,
-        context: ShapeContext
+        state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext
     ): VoxelShape {
         return createCuboidShape(1.0, 0.0, 2.0, 15.0, 16.0, 15.0)
     }
 
     override fun getOutlineShape(
-        state: BlockState,
-        world: BlockView,
-        pos: BlockPos,
-        context: ShapeContext
+        state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext
     ): VoxelShape {
         return createCuboidShape(1.0, 0.0, 2.0, 15.0, 16.0, 15.0)
     }
 
     override fun createBlockEntity(
-        pos: BlockPos,
-        state: BlockState
+        pos: BlockPos, state: BlockState
     ): BlockEntity {
-        return CraftingTableIIEntity(pos, state)
+        return CraftingTableIIBlockEntity(pos, state)
     }
 
     override fun getCodec(): MapCodec<out BlockWithEntity> {
@@ -135,11 +120,7 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
     }
 
     override fun onUse(
-        state: BlockState,
-        world: World,
-        pos: BlockPos,
-        player: PlayerEntity,
-        hit: BlockHitResult
+        state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult
     ): ActionResult {
         if (world.isClient) {
             return ActionResult.SUCCESS
@@ -153,16 +134,13 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
     }
 
     override fun <T : BlockEntity> getTicker(
-        world: World,
-        state: BlockState,
-        type: BlockEntityType<T>
+        world: World, state: BlockState, type: BlockEntityType<T>
     ): BlockEntityTicker<T> {
         return validateTicker(
-            type,
-            CraftingTableIIMod.ENTITY_TYPE
+            type, CraftingTableIIMod.ENTITY_TYPE
         ) { world1, pos, state1, entity ->
-            CraftingTableIIEntity.tick(
-                world1, pos, state1, entity as CraftingTableIIEntity
+            CraftingTableIIBlockEntity.tick(
+                world1, pos, state1, entity as CraftingTableIIBlockEntity
             )
         }!!
     }

@@ -1,4 +1,4 @@
-package net.johnpgr.craftingtableiifabric.entity
+package net.johnpgr.craftingtableiifabric.block.entity
 
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -9,9 +9,10 @@ import net.minecraft.client.model.ModelPartBuilder
 import net.minecraft.client.model.ModelTransform
 import net.minecraft.client.model.TexturedModelData
 import net.minecraft.client.render.entity.model.EntityModelLayer
+import net.minecraft.client.render.entity.model.LoadedEntityModels
 
 @Environment(EnvType.CLIENT)
-object CraftingTableIIEntityModel {
+object CraftingTableIIBlockEntityModel {
     private const val TEXTURE_WIDTH = 128
     private const val TEXTURE_HEIGHT = 64
 
@@ -21,6 +22,7 @@ object CraftingTableIIEntityModel {
                 EntityModelLayerRegistry.registerModelLayer(entityLayer) { textureModelData }
             }
     }
+
 
     val tableModelLayer = EntityModelLayer(
         CraftingTableIIMod.id("craftingtableii"),
@@ -156,8 +158,9 @@ object CraftingTableIIEntityModel {
         return TexturedModelData.of(md, TEXTURE_WIDTH, TEXTURE_HEIGHT)
     }
 
-    private fun getEntries(): LinkedHashMap<EntityModelLayer, TexturedModelData> {
-        val map = linkedMapOf<EntityModelLayer, TexturedModelData>()
+    private fun getEntries(): Map<EntityModelLayer, TexturedModelData> {
+        val map = mutableMapOf<EntityModelLayer, TexturedModelData>()
+
         map[tableModelLayer] = setupTable()
         map[doorModelLayer] = setupDoor()
         map[doorSideModelLayer] = setupDoorSide()
@@ -165,7 +168,9 @@ object CraftingTableIIEntityModel {
         map[doorTopSideModelLayer] = setupDoorTopSide()
         map[doorTopSide1ModelLayer] = setupDoorTopSide1()
         map[bookModelLayer] = setupBook()
+
         return map
     }
 
+    val loadedEntityModels: LoadedEntityModels = LoadedEntityModels(getEntries())
 }
