@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package net.johnpgr.craftingtableiifabric.description
+package net.johnpgr.craftingtableiifabric.util
 
 import com.google.gson.Gson
 import net.minecraft.resource.Resource
@@ -9,25 +9,18 @@ import java.io.File
 import java.io.FileWriter
 import java.nio.file.Files
 
-fun Resource.toDescriptionsDict(): HashMap<String, String> {
-    val inputStream = this.inputStream
+fun Resource.loadJsonToMap(): HashMap<String, String> {
     val json = inputStream.bufferedReader().use { it.readText() }
-
-    val res = Gson().fromJson(
-        json, HashMap::class.java
-    ) as HashMap<String, String>
-    return res
+    return Gson().fromJson(json, HashMap::class.java) as HashMap<String, String>
 }
 
-fun HashMap<String, String>.writeToFile(file: File) {
+fun Map<String, String>.writeToJsonFile(file: File) {
     val gson = Gson()
-
     BufferedWriter(FileWriter(file)).use { it.write(gson.toJson(this)) }
 }
 
-fun File.readAsDescriptionsDict(): HashMap<String, String> {
+fun File.readJsonAsMap(): HashMap<String, String> {
     val gson = Gson()
-
     return Files.newBufferedReader(toPath()).use { reader ->
         gson.fromJson(reader, HashMap::class.java) as HashMap<String, String>
     }

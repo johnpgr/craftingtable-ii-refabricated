@@ -46,17 +46,18 @@ class CraftingTableIISpecialRenderer : SimpleSpecialModelRenderer {
             )
         )
 
-    private val renderer = CraftingTableIIBlockEntityRenderer(
-        BlockEntityRendererFactory.Context(
-            client.blockEntityRenderDispatcher,
-            client.blockRenderManager,
-            client.itemModelManager,
-            client.itemRenderer,
-            client.entityRenderDispatcher,
-            CraftingTableIIBlockEntityModel.loadedEntityModels,
-            client.textRenderer
+    private val renderer: CraftingTableIIBlockEntityRenderer =
+        CraftingTableIIBlockEntityRenderer(
+            BlockEntityRendererFactory.Context(
+                client.blockEntityRenderDispatcher,
+                client.blockRenderManager,
+                client.itemModelManager,
+                client.itemRenderer,
+                client.entityRenderDispatcher,
+                CraftingTableIIBlockEntityModel.loadedEntityModels,
+                client.textRenderer
+            )
         )
-    )
 
     override fun render(
         displayContext: ItemDisplayContext,

@@ -51,7 +51,7 @@ class CraftingTableIIRecipeManager(
                     }
                 }
 
-        this.results = collections.flatMap { collection ->
+        results = collections.flatMap { collection ->
             collection.filter(RecipeFilterMode.CRAFTABLE).map { entry ->
                 Result(
                     entry.id(),

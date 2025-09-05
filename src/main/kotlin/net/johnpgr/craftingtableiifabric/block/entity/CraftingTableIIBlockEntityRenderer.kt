@@ -84,7 +84,7 @@ class CraftingTableIIBlockEntityRenderer(context: BlockEntityRendererFactory.Con
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(degrees))
         matrices.scale(-1f, -1f, 1f)
 
-        this.renderModels(
+        renderModels(
             entity.doorAngle,
             matrices,
             consumer,
@@ -102,13 +102,13 @@ class CraftingTableIIBlockEntityRenderer(context: BlockEntityRendererFactory.Con
         light: Int,
         overlay: Int
     ) {
-        this.door.getChild("door").setAngles(0f, rotation, 0f)
-        this.table.render(matrices, consumer, light, overlay)
-        this.door.render(matrices, consumer, light, overlay)
-        this.doorSide.render(matrices, consumer, light, overlay)
-        this.doorSide1.render(matrices, consumer, light, overlay)
-        this.doorTopSide.render(matrices, consumer, light, overlay)
-        this.doorTopSide1.render(matrices, consumer, light, overlay)
-        this.book.render(matrices, consumer, light, overlay)
+        door.getChild("door").setAngles(0f, rotation, 0f)
+        table.render(matrices, consumer, light, overlay)
+        door.render(matrices, consumer, light, overlay)
+        doorSide.render(matrices, consumer, light, overlay)
+        doorSide1.render(matrices, consumer, light, overlay)
+        doorTopSide.render(matrices, consumer, light, overlay)
+        doorTopSide1.render(matrices, consumer, light, overlay)
+        book.render(matrices, consumer, light, overlay)
     }
 }
