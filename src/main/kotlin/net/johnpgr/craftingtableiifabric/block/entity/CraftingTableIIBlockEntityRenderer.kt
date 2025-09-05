@@ -18,7 +18,7 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.RotationAxis
 
 @Environment(EnvType.CLIENT)
-class CraftingTableIIBlockEntityRenderer(arg: BlockEntityRendererFactory.Context) :
+class CraftingTableIIBlockEntityRenderer(context: BlockEntityRendererFactory.Context) :
     BlockEntityRenderer<CraftingTableIIBlockEntity> {
     companion object {
         fun register() {
@@ -34,19 +34,19 @@ class CraftingTableIIBlockEntityRenderer(arg: BlockEntityRendererFactory.Context
         CraftingTableIIMod.id("block/craftingtableii")
     )
     private val table =
-        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.tableModelLayer)
+        context.getLayerModelPart(CraftingTableIIBlockEntityModel.tableModelLayer)
     private val door =
-        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorModelLayer)
+        context.getLayerModelPart(CraftingTableIIBlockEntityModel.doorModelLayer)
     private val doorSide =
-        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorSideModelLayer)
+        context.getLayerModelPart(CraftingTableIIBlockEntityModel.doorSideModelLayer)
     private val doorSide1 =
-        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorSide1ModelLayer)
+        context.getLayerModelPart(CraftingTableIIBlockEntityModel.doorSide1ModelLayer)
     private val doorTopSide =
-        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorTopSideModelLayer)
+        context.getLayerModelPart(CraftingTableIIBlockEntityModel.doorTopSideModelLayer)
     private val doorTopSide1 =
-        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.doorTopSide1ModelLayer)
+        context.getLayerModelPart(CraftingTableIIBlockEntityModel.doorTopSide1ModelLayer)
     private val book =
-        arg.getLayerModelPart(CraftingTableIIBlockEntityModel.bookModelLayer)
+        context.getLayerModelPart(CraftingTableIIBlockEntityModel.bookModelLayer)
 
     override fun render(
         entity: CraftingTableIIBlockEntity,

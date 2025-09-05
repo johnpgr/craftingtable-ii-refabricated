@@ -40,8 +40,8 @@ import net.minecraft.world.World
 class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE).registryKey(REGISTRY_KEY)) {
     companion object {
         val ID = CraftingTableIIMod.id("crafting_table_ii")
-        val REGISTRY_KEY = RegistryKey.of(RegistryKeys.BLOCK, ID)
-        val ITEM_REGISTRY_KEY = RegistryKey.of(RegistryKeys.ITEM, ID)
+        val REGISTRY_KEY: RegistryKey<Block> = RegistryKey.of(RegistryKeys.BLOCK, ID)
+        val ITEM_REGISTRY_KEY: RegistryKey<Item> = RegistryKey.of(RegistryKeys.ITEM, ID)
         val CODEC: MapCodec<CraftingTableIIBlock> = createCodec { CraftingTableIIBlock() }
 
         fun register() {
@@ -55,10 +55,10 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
             )
 
             ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register { content ->
-                    content.addAfter(
-                        Items.CRAFTING_TABLE, CraftingTableIIMod.BLOCK
-                    )
-                }
+                content.addAfter(
+                    Items.CRAFTING_TABLE, CraftingTableIIMod.BLOCK
+                )
+            }
         }
     }
 
@@ -68,24 +68,28 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
 
     // FIXME: Maybe this is an unnecessary hack
     override fun getPlacementState(ctx: ItemPlacementContext): BlockState {
-        val direction = ctx.horizontalPlayerFacing.rotateYCounterclockwise()
+        var direction = ctx.horizontalPlayerFacing.rotateYCounterclockwise()
+        if (direction == Direction.NORTH || direction == Direction.SOUTH) {
+            direction = direction.opposite
+        }
 
-        return defaultState.with(
-            Properties.HORIZONTAL_FACING,
-            if (direction == Direction.NORTH || direction == Direction.SOUTH) direction.opposite
-            else direction
-        )
+        return defaultState.with(Properties.HORIZONTAL_FACING, direction)
     }
 
     override fun rotate(
-        state: BlockState, rotation: BlockRotation
+        state: BlockState,
+        rotation: BlockRotation
     ): BlockState {
         return state.with(
-            Properties.HORIZONTAL_FACING, rotation.rotate(state[Properties.HORIZONTAL_FACING])
+            Properties.HORIZONTAL_FACING,
+            rotation.rotate(state[Properties.HORIZONTAL_FACING])
         )
     }
 
-    override fun mirror(state: BlockState, mirror: BlockMirror): BlockState? {
+    override fun mirror(
+        state: BlockState,
+        mirror: BlockMirror
+    ): BlockState {
         return state.rotate(mirror.getRotation(state[Properties.HORIZONTAL_FACING]))
     }
 
@@ -98,19 +102,26 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
     }
 
     override fun getCollisionShape(
-        state: BlockState, view: BlockView, pos: BlockPos, context: ShapeContext
+        state: BlockState,
+        view: BlockView,
+        pos: BlockPos,
+        context: ShapeContext
     ): VoxelShape {
         return createCuboidShape(1.0, 0.0, 2.0, 15.0, 16.0, 15.0)
     }
 
     override fun getOutlineShape(
-        state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext
+        state: BlockState,
+        world: BlockView,
+        pos: BlockPos,
+        context: ShapeContext
     ): VoxelShape {
         return createCuboidShape(1.0, 0.0, 2.0, 15.0, 16.0, 15.0)
     }
 
     override fun createBlockEntity(
-        pos: BlockPos, state: BlockState
+        pos: BlockPos,
+        state: BlockState
     ): BlockEntity {
         return CraftingTableIIBlockEntity(pos, state)
     }
@@ -120,7 +131,11 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
     }
 
     override fun onUse(
-        state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult
+        state: BlockState,
+        world: World,
+        pos: BlockPos,
+        player: PlayerEntity,
+        hit: BlockHitResult
     ): ActionResult {
         if (world.isClient) {
             return ActionResult.SUCCESS
@@ -134,10 +149,13 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
     }
 
     override fun <T : BlockEntity> getTicker(
-        world: World, state: BlockState, type: BlockEntityType<T>
+        world: World,
+        state: BlockState,
+        type: BlockEntityType<T>
     ): BlockEntityTicker<T> {
         return validateTicker(
-            type, CraftingTableIIMod.ENTITY_TYPE
+            type,
+            CraftingTableIIMod.ENTITY_TYPE
         ) { world1, pos, state1, entity ->
             CraftingTableIIBlockEntity.tick(
                 world1, pos, state1, entity as CraftingTableIIBlockEntity
