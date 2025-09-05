@@ -1,5 +1,6 @@
 package net.johnpgr.craftingtableiifabric.network
 
+import io.netty.buffer.ByteBuf
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.johnpgr.craftingtableiifabric.CraftingTableIIMod
@@ -10,7 +11,6 @@ import net.minecraft.network.packet.CustomPayload
 import net.minecraft.recipe.CraftingRecipe
 import net.minecraft.recipe.NetworkRecipeId
 import net.minecraft.recipe.RecipeEntry
-import net.minecraft.server.world.ServerWorld
 
 data class CraftingTableIIPacket(
     val recipe: NetworkRecipeId, val syncId: Int, val quickCraft: Boolean
@@ -19,7 +19,7 @@ data class CraftingTableIIPacket(
 
     companion object {
         val ID = CustomPayload.Id<CraftingTableIIPacket>(CraftingTableIIMod.id("craft_packet"))
-        val PACKET_CODEC = PacketCodec.tuple(
+        val PACKET_CODEC: PacketCodec<ByteBuf, CraftingTableIIPacket> = PacketCodec.tuple(
             NetworkRecipeId.PACKET_CODEC, CraftingTableIIPacket::recipe,
             PacketCodecs.INTEGER, CraftingTableIIPacket::syncId,
             PacketCodecs.BOOLEAN, CraftingTableIIPacket::quickCraft,
@@ -32,9 +32,9 @@ data class CraftingTableIIPacket(
 
             ServerPlayNetworking.registerGlobalReceiver(ID) { data, context ->
                 val player = context.player()
-                val server = player.server
+                val server = player.server ?: return@registerGlobalReceiver
                 val creative = player.isCreative
-                val world = player.world as ServerWorld
+                val world = player.world
                 val playerInventory = player.inventory
 
                 if (player.currentScreenHandler.syncId == data.syncId && player.currentScreenHandler is CraftingTableIIScreenHandler) {

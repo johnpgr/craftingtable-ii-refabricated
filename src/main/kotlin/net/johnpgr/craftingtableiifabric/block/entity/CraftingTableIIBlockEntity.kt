@@ -9,10 +9,8 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
-import net.minecraft.registry.RegistryWrapper
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.util.collection.DefaultedList
@@ -46,22 +44,6 @@ class CraftingTableIIBlockEntity(
     )
     private var doorState: DoorState = DoorState.CLOSED
     var doorAngle: Float = 0.0f
-
-    override fun readNbt(
-        nbt: NbtCompound,
-        registryLookup: RegistryWrapper.WrapperLookup
-    ) {
-        super.readNbt(nbt, registryLookup)
-        Inventories.readNbt(nbt, inventory, registryLookup)
-    }
-
-    override fun writeNbt(
-        nbt: NbtCompound,
-        registryLookup: RegistryWrapper.WrapperLookup
-    ) {
-        super.writeNbt(nbt, registryLookup)
-        Inventories.writeNbt(nbt, inventory, registryLookup)
-    }
 
     override fun size(): Int {
         return inventory.size

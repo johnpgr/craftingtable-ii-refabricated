@@ -22,6 +22,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.RotationAxis
+import org.joml.Vector3f
 
 @Environment(EnvType.CLIENT)
 class CraftingTableIISpecialRenderer : SimpleSpecialModelRenderer {
@@ -103,6 +104,8 @@ class CraftingTableIISpecialRenderer : SimpleSpecialModelRenderer {
                 )
         }
     }
+
+    override fun collectVertices(vertices: Set<Vector3f>) {}
 
     data class Unbaked(val texture: Identifier) : SpecialModelRenderer.Unbaked {
         companion object {

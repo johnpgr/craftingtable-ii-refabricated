@@ -6,10 +6,10 @@ import net.johnpgr.craftingtableiifabric.CraftingTableIIMod
 import net.johnpgr.craftingtableiifabric.description.CraftingTableIIDescriptions
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIIInventory
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIISlot
+import net.minecraft.client.gl.RenderPipelines
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreens
-import net.minecraft.client.render.RenderLayer
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.slot.Slot
@@ -187,9 +187,11 @@ class CraftingTableIIScreen(
         mouseX: Int,
         mouseY: Int
     ) {
+        val client = client ?: return
+
         //draw inventory
         ctx.drawTexture(
-            RenderLayer::getGuiTextured,
+            RenderPipelines.GUI_TEXTURED,
             TEXTURE,
             x,
             y,
@@ -201,12 +203,12 @@ class CraftingTableIIScreen(
             256
         )
 
-        val craftableRecipesSize = this.screenHandler.recipeManager.results.size
+        val craftableRecipesSize = screenHandler.recipeManager.results.size
         val hasScroll = craftableRecipesSize > CraftingTableIIInventory.SIZE
 
         //draw scrollbar
         ctx.drawTexture(
-            RenderLayer::getGuiTextured,
+            RenderPipelines.GUI_TEXTURED,
             TEXTURE,
             scrollButtonX,
             scrollButtonY,
@@ -228,7 +230,7 @@ class CraftingTableIIScreen(
 
                 //draw description overlay
                 ctx.drawTexture(
-                    RenderLayer::getGuiTextured,
+                    RenderPipelines.GUI_TEXTURED,
                     DESCRIPTION_TEXTURE,
                     x - 124,
                     y,
@@ -266,7 +268,7 @@ class CraftingTableIIScreen(
                 ingredientStacks.forEachIndexed { r, stack ->
                     ctx.drawItem(stack, x - 25, y + 5 + r * 18)
                     ctx.drawStackOverlay(
-                        this.client!!.textRenderer,
+                        client.textRenderer,
                         stack,
                         x - 25,
                         y + 5 + r * 18
@@ -286,7 +288,7 @@ class CraftingTableIIScreen(
 
                 //draw title
                 ctx.drawText(
-                    this.client!!.textRenderer,
+                    client.textRenderer,
                     title,
                     titleX,
                     titleY,
@@ -297,21 +299,17 @@ class CraftingTableIIScreen(
                 val description =
                     CraftingTableIIDescriptions.descriptionsDict[output.item.translationKey]
                         ?: ""
-                val chunks = this.chunkDescription(description)
+                val chunks = chunkDescription(description)
                 val descY = titleY + 2
                 val scalef = 0.5f
 
-                ctx.matrices.push()
-                ctx.matrices.scale(scalef, scalef, 1.0f)
-                ctx.matrices.translate(
-                    (titleX / scalef).toDouble(),
-                    (descY / scalef).toDouble(),
-                    0.0
-                )
+                ctx.matrices.pushMatrix()
+                ctx.matrices.scale(scalef)
+                ctx.matrices.translate(titleX / scalef, descY / scalef)
 
                 for ((index, chunk) in chunks.withIndex()) {
                     ctx.drawText(
-                        this.client!!.textRenderer,
+                        client.textRenderer,
                         chunk,
                         0,
                         40 + 10 * index,
@@ -321,7 +319,7 @@ class CraftingTableIIScreen(
                 }
 
                 ctx.drawText(
-                    this.client!!.textRenderer,
+                    client.textRenderer,
                     "Code name: ",
                     0,
                     268,
@@ -330,7 +328,7 @@ class CraftingTableIIScreen(
                 )
 
                 ctx.drawText(
-                    this.client!!.textRenderer,
+                    client.textRenderer,
                     output.item.toString(),
                     0,
                     280,
@@ -338,7 +336,7 @@ class CraftingTableIIScreen(
                     false
                 )
 
-                ctx.matrices.pop()
+                ctx.matrices.popMatrix()
             }
         }
     }
