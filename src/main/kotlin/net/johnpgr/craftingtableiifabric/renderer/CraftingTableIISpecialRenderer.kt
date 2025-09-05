@@ -116,12 +116,10 @@ class CraftingTableIISpecialRenderer : SimpleSpecialModelRenderer {
                 ) { it.texture }
         }
 
-        override fun bake(entityModels: LoadedEntityModels): SpecialModelRenderer<*> {
-            return CraftingTableIISpecialRenderer()
-        }
+        override fun bake(entityModels: LoadedEntityModels): SpecialModelRenderer<*> =
+            CraftingTableIISpecialRenderer()
 
-        override fun getCodec(): MapCodec<out SpecialModelRenderer.Unbaked> {
-            return MAP_CODEC
-        }
+        override fun getCodec(): MapCodec<out SpecialModelRenderer.Unbaked> =
+            MAP_CODEC
     }
 }

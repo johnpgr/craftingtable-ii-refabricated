@@ -69,8 +69,8 @@ class CraftingTableIIBlock : BlockWithEntity(
         }
     }
 
-    override fun appendProperties(stateManager: StateManager.Builder<Block, BlockState>) {
-        stateManager.add(Properties.HORIZONTAL_FACING)
+    override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
+        builder.add(Properties.HORIZONTAL_FACING)
     }
 
     // FIXME: Maybe this is an unnecessary hack

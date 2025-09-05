@@ -21,7 +21,9 @@ class BlockScreenHandlerFactory<T : ScreenHandler, B : BlockEntity>(
 ) : ExtendedScreenHandlerFactory<BlockPos> {
     companion object {
         @Suppress("UNCHECKED_CAST")
-        fun <T : ScreenHandler, B : BlockEntity> createHandlerType(consumer: (Int, PlayerInventory, B, ScreenHandlerContext) -> T): ExtendedScreenHandlerType<T, BlockPos> {
+        fun <T : ScreenHandler, B : BlockEntity> createHandlerType(
+            consumer: (Int, PlayerInventory, B, ScreenHandlerContext) -> T
+        ): ExtendedScreenHandlerType<T, BlockPos> {
             return ExtendedScreenHandlerType({ syncId, playerInventory, pos ->
                 val player = playerInventory.player
                 val world = player.world
