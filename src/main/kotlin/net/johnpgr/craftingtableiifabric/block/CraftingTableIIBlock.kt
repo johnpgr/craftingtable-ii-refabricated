@@ -37,12 +37,17 @@ import net.minecraft.util.shape.VoxelShape
 import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
-class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE).registryKey(REGISTRY_KEY)) {
+class CraftingTableIIBlock : BlockWithEntity(
+    Settings.copy(Blocks.CRAFTING_TABLE).registryKey(REGISTRY_KEY)
+) {
     companion object {
         val ID = CraftingTableIIMod.id("crafting_table_ii")
-        val REGISTRY_KEY: RegistryKey<Block> = RegistryKey.of(RegistryKeys.BLOCK, ID)
-        val ITEM_REGISTRY_KEY: RegistryKey<Item> = RegistryKey.of(RegistryKeys.ITEM, ID)
-        val CODEC: MapCodec<CraftingTableIIBlock> = createCodec { CraftingTableIIBlock() }
+        val REGISTRY_KEY: RegistryKey<Block> =
+            RegistryKey.of(RegistryKeys.BLOCK, ID)
+        val ITEM_REGISTRY_KEY: RegistryKey<Item> =
+            RegistryKey.of(RegistryKeys.ITEM, ID)
+        val CODEC: MapCodec<CraftingTableIIBlock> =
+            createCodec { CraftingTableIIBlock() }
 
         fun register() {
             Registry.register(Registries.BLOCK, ID, CraftingTableIIMod.BLOCK)
@@ -50,15 +55,17 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
             Registry.register(
                 Registries.ITEM, ITEM_REGISTRY_KEY, BlockItem(
                     CraftingTableIIMod.BLOCK,
-                    Item.Settings().useBlockPrefixedTranslationKey().registryKey(ITEM_REGISTRY_KEY)
+                    Item.Settings().useBlockPrefixedTranslationKey()
+                        .registryKey(ITEM_REGISTRY_KEY)
                 )
             )
 
-            ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register { content ->
-                content.addAfter(
-                    Items.CRAFTING_TABLE, CraftingTableIIMod.BLOCK
-                )
-            }
+            ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL)
+                .register { content ->
+                    content.addAfter(
+                        Items.CRAFTING_TABLE, CraftingTableIIMod.BLOCK
+                    )
+                }
         }
     }
 
@@ -156,11 +163,7 @@ class CraftingTableIIBlock : BlockWithEntity(Settings.copy(Blocks.CRAFTING_TABLE
         return validateTicker(
             type,
             CraftingTableIIMod.ENTITY_TYPE
-        ) { world1, pos, state1, entity ->
-            CraftingTableIIBlockEntity.tick(
-                world1, pos, state1, entity as CraftingTableIIBlockEntity
-            )
-        }!!
+        ) { world1, pos, state1, entity -> entity.tick() }!!
     }
 
     override fun hasComparatorOutput(state: BlockState): Boolean {

@@ -40,15 +40,24 @@ class CraftingTableIIRecipeManager(
      * Refreshes the list of craftable items based on the current state of the player's inventory and recipe book.
      * This method updates the `recipeItemStacks` property with the new list of craftable item stacks.
      */
-
     private fun refreshResults() {
-        val collections = recipeBook.getResultsForCategory(RecipeBookType.CRAFTING).onEach { collection ->
-            collection.populateRecipes(recipeFinder) { screenHandler.canDisplay(it) }
-        }
+        val collections =
+            recipeBook.getResultsForCategory(RecipeBookType.CRAFTING)
+                .onEach { collection ->
+                    collection.populateRecipes(recipeFinder) {
+                        screenHandler.canDisplay(
+                            it
+                        )
+                    }
+                }
 
         this.results = collections.flatMap { collection ->
             collection.filter(RecipeFilterMode.CRAFTABLE).map { entry ->
-                Result(entry.id(), entry.getStacks(ctx), entry.craftingRequirements.getOrDefault(emptyList()))
+                Result(
+                    entry.id(),
+                    entry.getStacks(ctx),
+                    entry.craftingRequirements.getOrDefault(emptyList())
+                )
             }
         }
     }

@@ -23,12 +23,9 @@ class CraftingTableIIBlockEntity(
     pos: BlockPos,
     state: BlockState,
 ) : BlockEntity(CraftingTableIIMod.ENTITY_TYPE, pos, state), Inventory {
-    private var inventory =
-        DefaultedList.ofSize(CraftingTableIIInventory.SIZE, ItemStack.EMPTY)
-    private var doorState = DoorState.CLOSED
-    var doorAngle = 0.0f
-
     companion object {
+        private const val OPEN_SPEED = 0.2f
+
         fun register() {
             Registry.register(
                 Registries.BLOCK_ENTITY_TYPE,
@@ -36,79 +33,31 @@ class CraftingTableIIBlockEntity(
                 CraftingTableIIMod.ENTITY_TYPE,
             )
         }
-
-        private const val OPEN_SPEED = 0.2f
-
-        fun tick(
-            world: World,
-            pos: BlockPos,
-            state: BlockState,
-            entity: CraftingTableIIBlockEntity
-        ) {
-            val player = world.getClosestPlayer(
-                pos.x.toDouble(),
-                pos.y.toDouble(),
-                pos.z.toDouble(),
-                10.0,
-                false
-            ) ?: return
-
-            val playerDistance = player.squaredDistanceTo(
-                pos.x.toDouble(),
-                pos.y.toDouble(),
-                pos.z.toDouble()
-            )
-
-            if (playerDistance < 7.0) {
-                entity.doorAngle += OPEN_SPEED
-                if (entity.doorAngle > 1.8f) entity.doorAngle = 1.8f
-
-                if (entity.doorState != DoorState.OPEN) {
-                    entity.doorState = DoorState.OPEN
-                    world.playSound(
-                        pos.x.toDouble(),
-                        pos.y.toDouble(),
-                        pos.z.toDouble(),
-                        SoundEvents.BLOCK_CHEST_OPEN,
-                        SoundCategory.BLOCKS,
-                        0.2f,
-                        world.random.nextFloat() * 0.1f + 0.2f,
-                        false
-                    )
-                }
-            } else if (playerDistance > 7.0) {
-                entity.doorAngle -= OPEN_SPEED
-                if (entity.doorAngle < 0f) entity.doorAngle = 0f
-
-                if (entity.doorState != DoorState.CLOSED) {
-                    entity.doorState = DoorState.CLOSED
-                    world.playSound(
-                        pos.x.toDouble(),
-                        pos.y.toDouble(),
-                        pos.z.toDouble(),
-                        SoundEvents.BLOCK_CHEST_CLOSE,
-                        SoundCategory.BLOCKS,
-                        0.2f,
-                        world.random.nextFloat() * 0.1f + 0.2f,
-                        false
-                    )
-                }
-            }
-        }
-
     }
 
+    enum class DoorState {
+        OPEN,
+        CLOSED
+    }
+
+    private var inventory: DefaultedList<ItemStack> = DefaultedList.ofSize(
+        CraftingTableIIInventory.SIZE,
+        ItemStack.EMPTY
+    )
+    private var doorState: DoorState = DoorState.CLOSED
+    var doorAngle: Float = 0.0f
+
     override fun readNbt(
-        nbt: NbtCompound?,
-        registryLookup: RegistryWrapper.WrapperLookup?
+        nbt: NbtCompound,
+        registryLookup: RegistryWrapper.WrapperLookup
     ) {
         super.readNbt(nbt, registryLookup)
         Inventories.readNbt(nbt, inventory, registryLookup)
     }
 
     override fun writeNbt(
-        nbt: NbtCompound?,
-        registryLookup: RegistryWrapper.WrapperLookup?
+        nbt: NbtCompound,
+        registryLookup: RegistryWrapper.WrapperLookup
     ) {
         super.writeNbt(nbt, registryLookup)
         Inventories.writeNbt(nbt, inventory, registryLookup)
@@ -162,8 +111,69 @@ class CraftingTableIIBlockEntity(
         return true
     }
 
-    enum class DoorState {
-        OPEN,
-        CLOSED
+    fun tick() {
+        val world: World = world ?: return
+        val x = pos.x.toDouble()
+        val y = pos.y.toDouble()
+        val z = pos.z.toDouble()
+
+        val player = world.getClosestPlayer(
+            x, y, z,
+            10.0,
+            false
+        ) ?: return
+
+        val playerDistance = player.squaredDistanceTo(x, y, z)
+
+        if (playerDistance < 7.0) {
+            onPlayerApproach(player)
+        } else if (playerDistance > 7.0) {
+            onPlayerLeave(player)
+        }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun onPlayerApproach(player: PlayerEntity) {
+        val world: World = world ?: return
+
+        doorAngle += OPEN_SPEED
+        if (doorAngle > 1.8f) doorAngle = 1.8f
+
+        if (doorState != DoorState.OPEN) {
+            doorState = DoorState.OPEN
+
+            world.playSound(
+                null,
+                pos.x.toDouble(),
+                pos.y.toDouble(),
+                pos.z.toDouble(),
+                SoundEvents.BLOCK_CHEST_OPEN,
+                SoundCategory.BLOCKS,
+                0.2f,
+                world.random.nextFloat() * 0.1f + 0.2f,
+            )
+        }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun onPlayerLeave(player: PlayerEntity) {
+        val world: World = world ?: return
+
+        doorAngle -= OPEN_SPEED
+        if (doorAngle < 0f) doorAngle = 0f
+
+        if (doorState != DoorState.CLOSED) {
+            doorState = DoorState.CLOSED
+            world.playSound(
+                null,
+                pos.x.toDouble(),
+                pos.y.toDouble(),
+                pos.z.toDouble(),
+                SoundEvents.BLOCK_CHEST_CLOSE,
+                SoundCategory.BLOCKS,
+                0.2f,
+                world.random.nextFloat() * 0.1f + 0.2f,
+            )
+        }
     }
 }

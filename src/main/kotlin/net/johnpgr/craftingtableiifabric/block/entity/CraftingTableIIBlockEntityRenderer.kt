@@ -16,6 +16,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.RotationAxis
+import net.minecraft.util.math.Vec3d
 
 @Environment(EnvType.CLIENT)
 class CraftingTableIIBlockEntityRenderer(context: BlockEntityRendererFactory.Context) :
@@ -54,7 +55,8 @@ class CraftingTableIIBlockEntityRenderer(context: BlockEntityRendererFactory.Con
         matrices: MatrixStack,
         vertexConsumers: VertexConsumerProvider,
         light: Int,
-        overlay: Int
+        overlay: Int,
+        cameraPos: Vec3d
     ) {
         val consumer = texture.getVertexConsumer(
             vertexConsumers,
@@ -67,6 +69,7 @@ class CraftingTableIIBlockEntityRenderer(context: BlockEntityRendererFactory.Con
             ))
         val lightAbove =
             if (entity.hasWorld()) WorldRenderer.getLightmapCoordinates(
+                WorldRenderer.BrightnessGetter.DEFAULT,
                 entity.world,
                 entity.cachedState,
                 entity.pos.up()

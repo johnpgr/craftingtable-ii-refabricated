@@ -12,30 +12,38 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory
 import net.minecraft.client.render.entity.model.LoadedEntityModels
+import net.minecraft.client.render.item.model.special.SimpleSpecialModelRenderer
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer
 import net.minecraft.client.render.item.model.special.SpecialModelTypes
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.item.ItemStack
+import net.minecraft.item.ItemDisplayContext
 import net.minecraft.state.property.Properties
-import net.minecraft.item.ModelTransformationMode
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.RotationAxis
 
 @Environment(EnvType.CLIENT)
-class CraftingTableIISpecialRenderer : SpecialModelRenderer<Unit> {
+class CraftingTableIISpecialRenderer : SimpleSpecialModelRenderer {
     companion object {
         fun register() {
-            SpecialModelTypes.ID_MAPPER.put(CraftingTableIIBlock.ID, Unbaked.MAP_CODEC)
+            SpecialModelTypes.ID_MAPPER.put(
+                CraftingTableIIBlock.ID,
+                Unbaked.MAP_CODEC
+            )
         }
     }
 
     private val client: MinecraftClient = MinecraftClient.getInstance()
 
-    private val blockEntity: CraftingTableIIBlockEntity = CraftingTableIIBlockEntity(
-        BlockPos.ORIGIN, CraftingTableIIMod.BLOCK.defaultState.with(Properties.HORIZONTAL_FACING, Direction.SOUTH)
-    )
+    private val blockEntity: CraftingTableIIBlockEntity =
+        CraftingTableIIBlockEntity(
+            BlockPos.ORIGIN,
+            CraftingTableIIMod.BLOCK.defaultState.with(
+                Properties.HORIZONTAL_FACING,
+                Direction.SOUTH
+            )
+        )
 
     private val renderer = CraftingTableIIBlockEntityRenderer(
         BlockEntityRendererFactory.Context(
@@ -50,45 +58,58 @@ class CraftingTableIISpecialRenderer : SpecialModelRenderer<Unit> {
     )
 
     override fun render(
-        data: Unit?,
-        modelTransformationMode: ModelTransformationMode,
+        displayContext: ItemDisplayContext,
         matrices: MatrixStack,
         vertexConsumers: VertexConsumerProvider,
         light: Int,
         overlay: Int,
         glint: Boolean
     ) {
-        matrices.push()
+        val tickProgress = client.renderTickCounter.getTickProgress(true)
+        val cameraVec3d = client.gameRenderer.camera.pos
 
-        // Adjust the rotation and scale of the block item in interfaces
-        if (modelTransformationMode == ModelTransformationMode.GUI) {
-            matrices.translate(0.5, 0.5, 0.5)
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(270f))
-            matrices.translate(-0.5, -0.6, -0.5)
-            matrices.scale(1.12f, 1.12f, 1.12f)
+        when (displayContext) {
+            ItemDisplayContext.GUI -> {
+                matrices.push()
+
+                matrices.translate(0.5, 0.5, 0.5)
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(270f))
+                matrices.translate(-0.5, -0.6, -0.5)
+                matrices.scale(1.12f, 1.12f, 1.12f)
+
+
+                renderer.render(
+                    blockEntity,
+                    tickProgress,
+                    matrices,
+                    vertexConsumers,
+                    light,
+                    overlay,
+                    cameraVec3d
+                )
+
+                matrices.pop()
+            }
+
+            else ->
+                renderer.render(
+                    blockEntity,
+                    tickProgress,
+                    matrices,
+                    vertexConsumers,
+                    light,
+                    overlay,
+                    cameraVec3d
+                )
         }
-
-        renderer.render(
-            blockEntity,
-            client.renderTickCounter.getTickDelta(true),
-            matrices,
-            vertexConsumers,
-            light,
-            overlay
-        )
-
-        matrices.pop()
-    }
-
-    override fun getData(stack: ItemStack) {
-        // No data is needed for rendering this item
     }
 
     data class Unbaked(val texture: Identifier) : SpecialModelRenderer.Unbaked {
         companion object {
-            val MAP_CODEC: MapCodec<Unbaked> = Identifier.CODEC.fieldOf("texture").xmap(
-                ::Unbaked
-            ) { it.texture }
+            val MAP_CODEC: MapCodec<Unbaked> =
+                Identifier.CODEC.fieldOf("texture").xmap(
+                    ::Unbaked
+                ) { it.texture }
         }
 
         override fun bake(entityModels: LoadedEntityModels): SpecialModelRenderer<*> {
