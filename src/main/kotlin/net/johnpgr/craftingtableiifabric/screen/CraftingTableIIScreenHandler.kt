@@ -28,8 +28,8 @@ import net.minecraft.screen.slot.SlotActionType
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-//FIXME: Scrolling mouse on a resultInventory's slot when mouse wheel tweaks from mods are enabled cause ConcurrentModificationException
-//FIXME: Inventory Profiles Next functions to this screen's inventory cause ConcurrentModificationException also
+// FIXME: Scrolling mouse on a resultInventory's slot when mouse wheel tweaks from mods are enabled cause ConcurrentModificationException
+// FIXME: Inventory Profiles Next functions to this screen's inventory cause ConcurrentModificationException also
 class CraftingTableIIScreenHandler(
     syncId: Int,
     playerInventory: PlayerInventory,
@@ -51,12 +51,12 @@ class CraftingTableIIScreenHandler(
         }
 
         const val RESULT_INDEX = 0
-        const val INPUT_INDEX_START = 1
-        const val INPUT_INDEX_END = 9
-        const val PLAYER_INVENTORY_INDEX_START = 9
-        const val PLAYER_INVENTORY_INDEX_END = 36
-        const val PLAYER_HOTBAR_INDEX_START = 36
-        const val PLAYER_HOTBAR_INDEX_END = 45
+//        const val INPUT_INDEX_START = 1
+//        const val INPUT_INDEX_END = 9
+//        const val PLAYER_INVENTORY_INDEX_START = 9
+//        const val PLAYER_INVENTORY_INDEX_END = 36
+//        const val PLAYER_HOTBAR_INDEX_START = 36
+//        const val PLAYER_HOTBAR_INDEX_END = 45
         const val CTII_INVENTORY_INDEX_START = 45
         const val CTII_INVENTORY_INDEX_END = 85
     }
@@ -71,21 +71,21 @@ class CraftingTableIIScreenHandler(
     private var cachedInvChangeCount = -1
 
     init {
-        //The Crafting Result
+        // The Crafting Result
         addSlot(
             CraftingResultSlot(
                 player, input, result, 0, -999, -999
             )
         )
 
-        //The Crafting Grid
+        // The Crafting Grid
         for (row in 0 until 3) {
             for (col in 0 until 3) {
                 addSlot(Slot(input, col + row * 3, -999, -999))
             }
         }
 
-        //The player inventory
+        // The player inventory
         for (row in 0 until 3) {
             for (col in 0 until 9) {
                 addSlot(
@@ -99,12 +99,12 @@ class CraftingTableIIScreenHandler(
             }
         }
 
-        //The player hotbar
+        // The player hotbar
         for (row in 0 until 9) {
             addSlot(Slot(playerInventory, row, 8 + row * 18, 184))
         }
 
-        //Our inventory
+        // Our inventory
         for (row in 0 until CraftingTableIIInventory.ROWS) {
             for (col in 0 until CraftingTableIIInventory.COLS) {
                 addSlot(
