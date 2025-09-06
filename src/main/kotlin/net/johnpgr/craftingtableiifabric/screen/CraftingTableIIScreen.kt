@@ -29,6 +29,8 @@ class CraftingTableIIScreen(
     title
 ) {
     companion object {
+        private const val COLOR_WHITE: Int = 0xFFFFFFFF.toInt()
+
         private val TEXTURE: Identifier =
             CraftingTableIIMod.id("textures/gui/crafttableii.png")
         private val DESCRIPTION_TEXTURE: Identifier =
@@ -229,7 +231,7 @@ class CraftingTableIIScreen(
             if (!isMouseOverSlot(slot, mouseX, mouseY)) continue
             if (slot.stack.isEmpty) continue
 
-            //draw description overlay
+            // Draw description overlay
             ctx.drawTexture(
                 RenderPipelines.GUI_TEXTURED, DESCRIPTION_TEXTURE,
                 x - 124, y,
@@ -286,7 +288,7 @@ class CraftingTableIIScreen(
             ctx.drawText(
                 client.textRenderer,
                 title, titleX, titleY,
-                0xFFFFFF, false,
+                COLOR_WHITE, false,
             )
 
             val description =
@@ -306,20 +308,20 @@ class CraftingTableIIScreen(
                 ctx.drawText(
                     client.textRenderer,
                     text, textX, textY,
-                    0xFFFFFF, false
+                    COLOR_WHITE, false
                 )
             }
 
             ctx.drawText(
                 client.textRenderer,
                 "Code name: ", 0, 268,
-                0xFFFFFF, false
+                COLOR_WHITE, false
             )
 
             ctx.drawText(
                 client.textRenderer,
                 output.item.toString(), 0, 280,
-                0xFFFFFF, false
+                COLOR_WHITE, false
             )
 
             ctx.matrices.popMatrix()
