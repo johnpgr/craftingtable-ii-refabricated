@@ -24,7 +24,9 @@ class CraftingTableIIScreen(
     playerInventory: PlayerInventory,
     title: Text
 ) : HandledScreen<CraftingTableIIScreenHandler>(
-    screenHandler, playerInventory, title
+    screenHandler,
+    playerInventory,
+    title
 ) {
     companion object {
         private val TEXTURE: Identifier =
@@ -39,25 +41,29 @@ class CraftingTableIIScreen(
         }
     }
 
-    private var scrolling = false
-    private var scrollPosition = 0.0f
+    private val scrollBtnWidth: Int = 16
+    private val scrollBtnHeight: Int = 16
+
+    private var scrolling: Boolean = false
+    private var scrollPosition: Float = 0.0f
+
     private val scrollBarStartY: Int
         get() = y + 17
 
     private val scrollBarEndY: Int
         get() = scrollBarStartY + 90
 
-    private val scrollButtonY: Int
-        get() = y + 17 + ((scrollBarEndY - scrollBarStartY - 17) * scrollPosition).toInt()
+    private val scrollBtnY: Int
+        get() = scrollBarStartY + ((scrollBarEndY - scrollBarStartY - 17) * scrollPosition).toInt()
 
-    private val scrollButtonX: Int
+    private val scrollBtnX: Int
         get() = x + 154
 
     private val scrollable: Boolean
         get() = screenHandler.recipeManager.results.size > CraftingTableIIInventory.SIZE
 
     private fun inScrollbar(mouseX: Double, mouseY: Double): Boolean {
-        return mouseX >= scrollButtonX && mouseX <= scrollButtonX + 16 &&
+        return mouseX >= scrollBtnX && mouseX <= scrollBtnX + scrollBtnHeight &&
                 mouseY >= scrollBarStartY && mouseY <= scrollBarEndY
     }
 
@@ -104,9 +110,9 @@ class CraftingTableIIScreen(
 
         val start = scrollBarStartY
         val end = scrollBarEndY
-        scrollPosition =
-            ((mouseY - start).toFloat() - 7.5f) / (end - start).toFloat() - 15.0f
+        scrollPosition = ((mouseY - start - 7.5f) / (end - start - 15.0f)).toFloat()
         scrollPosition = MathHelper.clamp(scrollPosition, 0f, 1f)
+
         scrollResults(scrollPosition)
         return true
     }
@@ -116,13 +122,15 @@ class CraftingTableIIScreen(
         mouseY: Double,
         button: Int,
     ): Boolean {
-        if (scrollable && button == 0 && !scrolling && inScrollbar(
-                mouseX,
-                mouseY
-            )
+        if (scrollable
+            && !scrolling
+            && button == 0
+            && inScrollbar(mouseX, mouseY)
         ) {
             scrolling = true
+            return true
         }
+
         return super.mouseClicked(mouseX, mouseY, button)
     }
 
@@ -160,7 +168,7 @@ class CraftingTableIIScreen(
         val aX = mouseX - x
         val aY = mouseY - y
 
-        //check if the mouse is in our inventory bounds
+        // Check if the mouse is in our inventory bounds
         if ((aX >= 0 && aY >= 0 && aX < 176) && aY < backgroundHeight - 100) {
             val i = (craftableRecipesSize + 8 - 1) / 8 - 5
             val j = MathHelper.clamp(amount, -1.0, 1.0)
@@ -190,154 +198,130 @@ class CraftingTableIIScreen(
 
         // Draw inventory
         ctx.drawTexture(
-            RenderPipelines.GUI_TEXTURED,
-            TEXTURE,
-            x,
-            y,
-            0.0f,
-            0.0f,
-            backgroundWidth,
-            backgroundHeight,
-            256,
-            256
+            RenderPipelines.GUI_TEXTURED, TEXTURE,
+            x, y,
+            0.0f, 0.0f,
+            backgroundWidth, backgroundHeight,
+            256, 256
         )
 
         val craftableRecipesSize = screenHandler.recipeManager.results.size
         val hasScroll = craftableRecipesSize > CraftingTableIIInventory.SIZE
 
+        val scrollU = if (hasScroll) 0f else 16f
+        val scrollV = 208f
+
         // Draw scrollbar
         ctx.drawTexture(
-            RenderPipelines.GUI_TEXTURED,
-            TEXTURE,
-            scrollButtonX,
-            scrollButtonY,
-            if (hasScroll) 0f else 16f,
-            208f,
-            16,
-            16,
-            256,
-            256
+            RenderPipelines.GUI_TEXTURED, TEXTURE,
+            scrollBtnX, scrollBtnY,
+            scrollU, scrollV,
+            scrollBtnWidth, scrollBtnHeight,
+            256, 256
         )
 
         for (i in CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_START
-                ..CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_END) {
+                .. CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_END) {
             val slot =
                 screenHandler.getSlot(i) as? CraftingTableIISlot ?: continue
 
-            if (isMouseOverSlot(slot, mouseX, mouseY)) {
-                if (slot.stack.isEmpty) continue
+            if (!isMouseOverSlot(slot, mouseX, mouseY)) continue
+            if (slot.stack.isEmpty) continue
 
-                //draw description overlay
-                ctx.drawTexture(
-                    RenderPipelines.GUI_TEXTURED,
-                    DESCRIPTION_TEXTURE,
-                    x - 124,
-                    y,
-                    0f,
-                    0f,
-                    121,
-                    162,
-                    256,
-                    256
-                )
+            //draw description overlay
+            ctx.drawTexture(
+                RenderPipelines.GUI_TEXTURED, DESCRIPTION_TEXTURE,
+                x - 124, y,
+                0f, 0f,
+                121, 162,
+                256, 256
+            )
 
-                val recipe = slot.recipe ?: continue
-                val ingredientStacks = arrayListOf<ItemStack>()
+            val recipe = slot.recipe ?: continue
+            val ingredientStacks = arrayListOf<ItemStack>()
 
-                // TODO: Find a way to draw all matching stacks.
-                // Maybe a timer that loops through the list of matching stacks
-                for (ingredient in recipe.ingredients) {
-                    if (ingredient.isEmpty) continue
-                    @Suppress("DEPRECATION")
-                    val entry = ingredient.matchingItems
-                        .findFirst()
-                        .orElse(null) ?: continue
-                    val item = entry.value()
-                    val itemStack = item.defaultStack
+            // TODO: Find a way to draw all matching stacks.
+            // Maybe a timer that loops through the list of matching stacks
+            for (ingredient in recipe.ingredients) {
+                if (ingredient.isEmpty) continue
 
-                    val index =
-                        ingredientStacks.indexOfFirst { it.item == item }
+                @Suppress("DEPRECATION")
+                val entry = ingredient.matchingItems.findFirst().orElse(null)
+                    ?: continue
 
-                    if (index == -1) {
-                        ingredientStacks.add(itemStack.copy())
-                        continue
-                    }
-                    ingredientStacks[index].count += itemStack.count
+                val item = entry.value()
+                val itemStack = item.defaultStack
+
+                val index = ingredientStacks.indexOfFirst { it.item == item }
+
+                if (index == -1) {
+                    ingredientStacks.add(itemStack.copy())
+                    continue
                 }
-
-                ingredientStacks.forEachIndexed { r, stack ->
-                    ctx.drawItem(stack, x - 25, y + 5 + r * 18)
-                    ctx.drawStackOverlay(
-                        client.textRenderer,
-                        stack,
-                        x - 25,
-                        y + 5 + r * 18
-                    )
-                }
-
-                val output = recipe.getDisplayStack()
-
-                val titleX = x - 118
-                val titleY = y + 9
-
-                val title = if (output.name.string.length > 16) {
-                    output.name.string.substring(0, 16) + "..."
-                } else {
-                    output.name.string
-                }
-
-                // Draw title
-                ctx.drawText(
-                    client.textRenderer,
-                    title,
-                    titleX,
-                    titleY,
-                    0xFFFFFF,
-                    false,
-                )
-
-                val description =
-                    CraftingTableIIDescriptions.descriptions[output.item.translationKey]
-                        ?: ""
-                val chunks = description.breakLines()
-                val descY = titleY + 2
-                val scale = 0.5f
-
-                ctx.matrices.pushMatrix()
-                ctx.matrices.scale(scale)
-                ctx.matrices.translate(titleX / scale, descY / scale)
-
-                for ((index, chunk) in chunks.withIndex()) {
-                    ctx.drawText(
-                        client.textRenderer,
-                        chunk,
-                        0,
-                        40 + 10 * index,
-                        0xFFFFFF,
-                        false
-                    )
-                }
-
-                ctx.drawText(
-                    client.textRenderer,
-                    "Code name: ",
-                    0,
-                    268,
-                    0xFFFFFF,
-                    false
-                )
-
-                ctx.drawText(
-                    client.textRenderer,
-                    output.item.toString(),
-                    0,
-                    280,
-                    0xFFFFFF,
-                    false
-                )
-
-                ctx.matrices.popMatrix()
+                ingredientStacks[index].count += itemStack.count
             }
+
+            for ((r, stack) in ingredientStacks.withIndex()) {
+                ctx.drawItem(stack, x - 25, y + 5 + r * 18)
+                ctx.drawStackOverlay(
+                    client.textRenderer,
+                    stack,
+                    x - 25, y + 5 + r * 18
+                )
+            }
+
+            val output = recipe.getDisplayStack()
+
+            val titleX = x - 118
+            val titleY = y + 9
+
+            val title = if (output.name.string.length > 16) {
+                output.name.string.substring(0, 16) + "..."
+            } else {
+                output.name.string
+            }
+
+            // Draw title
+            ctx.drawText(
+                client.textRenderer,
+                title, titleX, titleY,
+                0xFFFFFF, false,
+            )
+
+            val description =
+                CraftingTableIIDescriptions.descriptions[output.item.translationKey]
+                    ?: ""
+            val chunks = description.breakLines()
+            val descY = titleY + 2
+            val scale = 0.5f
+
+            ctx.matrices.pushMatrix()
+            ctx.matrices.scale(scale)
+            ctx.matrices.translate(titleX / scale, descY / scale)
+
+            for ((index, text) in chunks.withIndex()) {
+                val textX = 0
+                val textY = 40 + index * 10
+                ctx.drawText(
+                    client.textRenderer,
+                    text, textX, textY,
+                    0xFFFFFF, false
+                )
+            }
+
+            ctx.drawText(
+                client.textRenderer,
+                "Code name: ", 0, 268,
+                0xFFFFFF, false
+            )
+
+            ctx.drawText(
+                client.textRenderer,
+                output.item.toString(), 0, 280,
+                0xFFFFFF, false
+            )
+
+            ctx.matrices.popMatrix()
         }
     }
 
