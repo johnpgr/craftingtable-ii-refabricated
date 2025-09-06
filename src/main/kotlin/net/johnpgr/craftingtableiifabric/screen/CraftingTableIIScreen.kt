@@ -110,7 +110,8 @@ class CraftingTableIIScreen(
 
         val start = scrollBarStartY
         val end = scrollBarEndY
-        scrollPosition = ((mouseY - start - 7.5f) / (end - start - 15.0f)).toFloat()
+        scrollPosition =
+            ((mouseY - start - 7.5f) / (end - start - 15.0f)).toFloat()
         scrollPosition = MathHelper.clamp(scrollPosition, 0f, 1f)
 
         scrollResults(scrollPosition)
@@ -221,7 +222,7 @@ class CraftingTableIIScreen(
         )
 
         for (i in CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_START
-                .. CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_END) {
+                ..CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_END) {
             val slot =
                 screenHandler.getSlot(i) as? CraftingTableIISlot ?: continue
 

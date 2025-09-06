@@ -5,7 +5,9 @@ import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.loader.api.FabricLoader
 import net.johnpgr.craftingtableiifabric.CraftingTableIIMod
-import net.johnpgr.craftingtableiifabric.util.*
+import net.johnpgr.craftingtableiifabric.util.loadJsonToMap
+import net.johnpgr.craftingtableiifabric.util.readJsonAsMap
+import net.johnpgr.craftingtableiifabric.util.writeToJsonFile
 import net.minecraft.client.MinecraftClient
 import java.io.File
 import kotlin.jvm.optionals.getOrNull

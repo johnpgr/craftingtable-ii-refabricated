@@ -15,7 +15,8 @@ class CraftingTableIIInventory(
         const val SIZE = ROWS * COLS
     }
 
-    val recipes: MutableList<CraftingTableIIRecipeManager.Result> = mutableListOf()
+    val recipes: MutableList<CraftingTableIIRecipeManager.Result> =
+        mutableListOf()
 
     override fun size(): Int {
         return entity.size()

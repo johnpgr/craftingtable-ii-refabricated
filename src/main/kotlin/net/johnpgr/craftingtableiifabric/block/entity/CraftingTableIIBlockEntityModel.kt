@@ -172,5 +172,6 @@ object CraftingTableIIBlockEntityModel {
         return map
     }
 
-    val loadedEntityModels: LoadedEntityModels = LoadedEntityModels(getEntries())
+    val loadedEntityModels: LoadedEntityModels =
+        LoadedEntityModels(getEntries())
 }

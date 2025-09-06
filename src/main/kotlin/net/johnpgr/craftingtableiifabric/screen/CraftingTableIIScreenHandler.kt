@@ -44,7 +44,9 @@ class CraftingTableIIScreenHandler(
     companion object {
         fun register() {
             Registry.register(
-                Registries.SCREEN_HANDLER, CraftingTableIIBlock.ID, CraftingTableIIMod.SCREEN_HANDLER
+                Registries.SCREEN_HANDLER,
+                CraftingTableIIBlock.ID,
+                CraftingTableIIMod.SCREEN_HANDLER
             )
         }
 
@@ -88,7 +90,10 @@ class CraftingTableIIScreenHandler(
             for (col in 0 until 9) {
                 addSlot(
                     Slot(
-                        playerInventory, col + row * 9 + 9, 8 + col * 18, 125 + row * 18
+                        playerInventory,
+                        col + row * 9 + 9,
+                        8 + col * 18,
+                        125 + row * 18
                     )
                 )
             }
@@ -104,14 +109,18 @@ class CraftingTableIIScreenHandler(
             for (col in 0 until CraftingTableIIInventory.COLS) {
                 addSlot(
                     CraftingTableIISlot(
-                        inventory, col + row * CraftingTableIIInventory.COLS, 8 + col * 18, 18 + row * 18
+                        inventory,
+                        col + row * CraftingTableIIInventory.COLS,
+                        8 + col * 18,
+                        18 + row * 18
                     )
                 )
             }
         }
 
         if (player.world.isClient) {
-            recipeManager = CraftingTableIIRecipeManager(this, player as ClientPlayerEntity)
+            recipeManager =
+                CraftingTableIIRecipeManager(this, player as ClientPlayerEntity)
         }
     }
 
@@ -136,7 +145,10 @@ class CraftingTableIIScreenHandler(
     }
 
     override fun onSlotClick(
-        slotIndex: Int, button: Int, actionType: SlotActionType, player: PlayerEntity
+        slotIndex: Int,
+        button: Int,
+        actionType: SlotActionType,
+        player: PlayerEntity
     ) {
         super.onSlotClick(slotIndex, button, actionType, player)
 
@@ -149,7 +161,13 @@ class CraftingTableIIScreenHandler(
         val itemStack = slot.stack
         val recipe = slot.recipe ?: return
 
-        ClientPlayNetworking.send(CraftingTableIIPacket(recipe.id, syncId, quickCraft))
+        ClientPlayNetworking.send(
+            CraftingTableIIPacket(
+                recipe.id,
+                syncId,
+                quickCraft
+            )
+        )
 
         lastCraftedItem = itemStack
     }
@@ -242,7 +260,7 @@ class CraftingTableIIScreenHandler(
         return when (display) {
             is ShapedCraftingRecipeDisplay -> width >= display.width() && height >= display.height()
             is ShapelessCraftingRecipeDisplay -> width * height >= display.ingredients().size
-            else -> false;
+            else -> false
         }
     }
 }

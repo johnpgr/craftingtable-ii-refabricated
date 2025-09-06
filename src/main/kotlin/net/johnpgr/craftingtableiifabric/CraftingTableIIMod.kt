@@ -15,8 +15,10 @@ object CraftingTableIIMod : ModInitializer {
     const val MOD_ID = "craftingtableiifabric"
     val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID)
     val BLOCK = CraftingTableIIBlock()
-    val SCREEN_HANDLER = BlockScreenHandlerFactory.createHandlerType(::CraftingTableIIScreenHandler)
-    val ENTITY_TYPE = BlockEntityFactory.createEntityType<CraftingTableIIBlockEntity>(BLOCK)
+    val SCREEN_HANDLER =
+        BlockScreenHandlerFactory.createHandlerType(::CraftingTableIIScreenHandler)
+    val ENTITY_TYPE =
+        BlockEntityFactory.createEntityType<CraftingTableIIBlockEntity>(BLOCK)
 
     fun id(name: String) = Identifier.of(MOD_ID, name)!!
 
