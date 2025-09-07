@@ -23,6 +23,7 @@ object CraftingTableIIMod : ModInitializer {
     fun id(name: String) = Identifier.of(MOD_ID, name)!!
 
     override fun onInitialize() {
+//        ServerRecipesAcessor.register()
         CraftingTableIIBlock.register()
         CraftingTableIIBlockEntity.register()
         CraftingTableIIScreenHandler.register()

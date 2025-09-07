@@ -3,6 +3,7 @@
 package net.johnpgr.craftingtableiifabric.util
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import net.minecraft.resource.Resource
 import java.io.BufferedWriter
 import java.io.File
@@ -15,7 +16,7 @@ fun Resource.loadJsonToMap(): HashMap<String, String> {
 }
 
 fun Map<String, String>.writeToJsonFile(file: File) {
-    val gson = Gson()
+    val gson = GsonBuilder().setPrettyPrinting().create()
     BufferedWriter(FileWriter(file)).use { it.write(gson.toJson(this)) }
 }
 

@@ -45,9 +45,7 @@ class CraftingTableIIRecipeManager(
             recipeBook.getResultsForCategory(RecipeBookType.CRAFTING)
                 .onEach { collection ->
                     collection.populateRecipes(recipeFinder) {
-                        screenHandler.canDisplay(
-                            it
-                        )
+                        screenHandler.canDisplay(it)
                     }
                 }
 

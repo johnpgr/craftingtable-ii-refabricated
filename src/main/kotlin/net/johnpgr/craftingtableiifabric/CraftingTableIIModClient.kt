@@ -1,6 +1,5 @@
 package net.johnpgr.craftingtableiifabric
 
-//import net.johnpgr.craftingtableiifabric.renderer.CraftingTableIIItemDynamicRenderer
 import net.fabricmc.api.ClientModInitializer
 import net.johnpgr.craftingtableiifabric.block.entity.CraftingTableIIBlockEntityModel
 import net.johnpgr.craftingtableiifabric.block.entity.CraftingTableIIBlockEntityRenderer
