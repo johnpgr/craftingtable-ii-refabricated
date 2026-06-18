@@ -1,5 +1,4 @@
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import net.fabricmc.loom.configuration.ide.RunConfigSettings
 import net.fabricmc.loom.task.RemapJarTask
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -18,7 +17,6 @@ import org.gradle.language.jvm.tasks.ProcessResources
 fun Project.configureFabricLoader(
     loader: String,
     fabricModJsonProperties: Map<String, Any>,
-    isActive: Boolean,
 ) {
     val minecraftDependency = mod.dep("minecraft.fabric")
     val javaVersion = mod.prop("java_version")
@@ -33,15 +31,10 @@ fun Project.configureFabricLoader(
 
     extensions.configure<SourceSetContainer>("sourceSets") {
         named("main") {
+            java.srcDir(rootProject.file("common/src/main/java"))
             resources.srcDir(rootProject.file("common/src/main/resources"))
-            resources.srcDir(rootProject.file("fabric/src/main/resources"))
         }
     }
-
-    versionedJavaSources(
-        rootProject.file("common/src/main/java"),
-        rootProject.file("fabric/src/main/java"),
-    )
 
     repositories {
         maven("https://maven.neoforged.net/releases/")
@@ -86,29 +79,9 @@ fun Project.configureFabricLoader(
         dependsOn("build")
     }
 
-    if (isActive) {
-        rootProject.tasks.register("buildActive") {
-            group = "project"
-            description = "Builds and collects active subproject artifacts."
-            dependsOn(buildAndCollect)
-        }
-
-        rootProject.tasks.register("testClient") {
-            group = "project"
-            description = "Launches the client for testing the active Fabric version."
-            dependsOn(tasks.named("runClient"))
-        }
-
-        rootProject.tasks.register("testServer") {
-            group = "project"
-            description = "Launches the server for testing the active Fabric version."
-            dependsOn(tasks.named("runServer"))
-        }
-    }
-
     loom.runs {
         configureEach {
-            ideConfigGenerated(isActive)
+            ideConfigGenerated(true)
         }
         named("client") {
             setRunDir(
@@ -144,7 +117,7 @@ fun Project.configureFabricLoader(
     }
 
     tasks.named("build") {
-        group = "versioned"
-        description = "Stonecutter target build task."
+        group = "build"
+        description = "Builds the Fabric artifact."
     }
 }

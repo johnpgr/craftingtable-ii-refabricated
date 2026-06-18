@@ -35,11 +35,9 @@ public final class CraftingTableIIDescriptions {
     public static File descriptionFile(String lang) {
         return new File(
                 Services.PLATFORM.getConfigDirectory(),
-                MOD_ID + File.separator + "descriptions" + File.separator + lang + ".json"
+                CraftingTableII.MOD_ID + File.separator + "descriptions" + File.separator + lang + ".json"
         );
     }
-
-    private static String MOD_ID = CraftingTableII.MOD_ID;
 
     public static void register() {
         Services.CLIENT.onClientStarted(() -> {

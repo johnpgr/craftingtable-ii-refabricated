@@ -1,14 +1,9 @@
 package net.johnpgr.craftingtableiifabric.entity;
 
-import org.jetbrains.annotations.Nullable;
 import net.johnpgr.craftingtableiifabric.CraftingTableII;
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIIInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.ContainerHelper;
@@ -23,8 +18,8 @@ import net.minecraft.world.phys.Vec3;
 public class CraftingTableIIEntity extends BlockEntity implements WorldlyContainer {
     private static final float OPEN_SPEED = 0.2f;
 
-    private final NonNullList<ItemStack> inventory =
-            NonNullList.withSize(CraftingTableIIInventory.SIZE, ItemStack.EMPTY);
+    private final net.minecraft.core.NonNullList<ItemStack> inventory =
+            net.minecraft.core.NonNullList.withSize(CraftingTableIIInventory.SIZE, ItemStack.EMPTY);
     private DoorState doorState = DoorState.CLOSED;
     public float doorAngle = 0.0f;
 
@@ -52,7 +47,7 @@ public class CraftingTableIIEntity extends BlockEntity implements WorldlyContain
                         null,
                         pos,
                         SoundEvents.CHEST_OPEN,
-                        SoundSource.BLOCKS,
+                        net.minecraft.sounds.SoundSource.BLOCKS,
                         0.2f,
                         level.random.nextFloat() * 0.1f + 0.2f
                 );
@@ -69,7 +64,7 @@ public class CraftingTableIIEntity extends BlockEntity implements WorldlyContain
                         null,
                         pos,
                         SoundEvents.CHEST_CLOSE,
-                        SoundSource.BLOCKS,
+                        net.minecraft.sounds.SoundSource.BLOCKS,
                         0.2f,
                         level.random.nextFloat() * 0.1f + 0.2f
                 );
@@ -138,17 +133,17 @@ public class CraftingTableIIEntity extends BlockEntity implements WorldlyContain
     }
 
     @Override
-    public int[] getSlotsForFace(Direction side) {
+    public int[] getSlotsForFace(net.minecraft.core.Direction side) {
         return new int[0];
     }
 
     @Override
-    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction direction) {
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.core.Direction direction) {
         return false;
     }
 
     @Override
-    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
+    public boolean canTakeItemThroughFace(int slot, ItemStack stack, net.minecraft.core.Direction direction) {
         return false;
     }
 

@@ -12,10 +12,6 @@ import net.johnpgr.craftingtableiifabric.screen.CraftingTableIIScreenHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-//? if >=1.21.3 {
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-//? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -57,16 +53,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 blockId,
                 CraftingTableII.BLOCK
         );
-        var blockItemProperties = new Item.Properties();
-        //? if >=1.21.3 {
-        blockItemProperties
-                .setId(ResourceKey.create(Registries.ITEM, blockId))
-                .useBlockDescriptionPrefix();
-        //? }
         Registry.register(
                 BuiltInRegistries.ITEM,
                 blockId,
-                new BlockItem(CraftingTableII.BLOCK, blockItemProperties)
+                new BlockItem(CraftingTableII.BLOCK, new Item.Properties())
         );
         Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE,

@@ -4,11 +4,7 @@ import net.johnpgr.craftingtableiifabric.entity.CraftingTableIIEntity;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-//? if <1.21.3 {
 import net.minecraft.world.item.crafting.RecipeHolder;
-//? } else {
-import net.minecraft.world.item.crafting.display.RecipeDisplayId;
-//? }
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,11 +17,7 @@ public class CraftingTableIIInventory implements Container {
     public static final int SIZE = ROWS * COLS;
 
     private final CraftingTableIIEntity entity;
-    //? if <1.21.3 {
     private final List<RecipeHolder<?>> recipes = new ArrayList<>(Collections.nCopies(SIZE, null));
-    //? } else {
-    private final List<RecipeDisplayId> recipes = new ArrayList<>(Collections.nCopies(SIZE, null));
-    //? }
 
     public CraftingTableIIInventory(CraftingTableIIEntity entity) {
         this.entity = entity;
@@ -67,20 +59,12 @@ public class CraftingTableIIInventory implements Container {
         entity.setItem(slot, stack.copy());
     }
 
-    //? if <1.21.3 {
     public void setItem(int slot, ItemStack stack, RecipeHolder<?> recipe) {
-    //? } else {
-    public void setItem(int slot, ItemStack stack, RecipeDisplayId recipe) {
-    //? }
         setItem(slot, stack);
         recipes.set(slot, recipe);
     }
 
-    //? if <1.21.3 {
     public RecipeHolder<?> getRecipe(int slot) {
-    //? } else {
-    public RecipeDisplayId getRecipe(int slot) {
-    //? }
         if (slot < 0 || slot >= recipes.size()) {
             return null;
         }

@@ -5,11 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.johnpgr.craftingtableiifabric.network.CraftingTableIIPayload;
 import net.johnpgr.craftingtableiifabric.platform.services.INetworkHelper;
-//? if <1.21.3 {
 import net.minecraft.world.item.crafting.RecipeHolder;
-//? } else {
-import net.minecraft.world.item.crafting.display.RecipeDisplayId;
-//? }
 
 public class FabricNetworkHelper implements INetworkHelper {
     @Override
@@ -26,11 +22,7 @@ public class FabricNetworkHelper implements INetworkHelper {
     }
 
     @Override
-    //? if <1.21.3 {
     public void sendCraftPacket(RecipeHolder<?> recipe, int syncId, boolean quickCraft) {
-    //? } else {
-    public void sendCraftPacket(RecipeDisplayId recipe, int syncId, boolean quickCraft) {
-    //? }
         ClientPlayNetworking.send(CraftingTableIIPayload.fromRecipe(recipe, syncId, quickCraft));
     }
 }

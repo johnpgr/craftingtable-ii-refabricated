@@ -1,4 +1,3 @@
-//? if <1.21.4 {
 package net.johnpgr.craftingtableiifabric.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,7 +12,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class CraftingTableIIItemRenderer extends BlockEntityWithoutLevelRenderer {
     public CraftingTableIIItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
@@ -35,7 +33,7 @@ public class CraftingTableIIItemRenderer extends BlockEntityWithoutLevelRenderer
         );
         Minecraft instance = Minecraft.getInstance();
         CraftingTableIIEntityRenderer renderer = new CraftingTableIIEntityRenderer(
-                new BlockEntityRendererProvider.Context(
+                new net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context(
                         instance.getBlockEntityRenderDispatcher(),
                         instance.getBlockRenderer(),
                         instance.getItemRenderer(),
@@ -46,11 +44,7 @@ public class CraftingTableIIItemRenderer extends BlockEntityWithoutLevelRenderer
         );
         renderer.render(
                 tableEntity,
-                //? if <1.21.3 {
                 instance.getTimer().getGameTimeDeltaPartialTick(true),
-                //? } else {
-                instance.getDeltaTracker().getGameTimeDeltaPartialTick(true),
-                //? }
                 poseStack,
                 bufferSource,
                 packedLight,
@@ -58,4 +52,3 @@ public class CraftingTableIIItemRenderer extends BlockEntityWithoutLevelRenderer
         );
     }
 }
-//? }

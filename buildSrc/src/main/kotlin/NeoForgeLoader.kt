@@ -1,7 +1,4 @@
-import net.neoforged.moddevgradle.dsl.ModModel
 import net.neoforged.moddevgradle.dsl.NeoForgeExtension
-import net.neoforged.moddevgradle.dsl.Parchment
-import net.neoforged.moddevgradle.dsl.RunModel
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.BasePluginExtension
@@ -17,7 +14,7 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.language.jvm.tasks.ProcessResources
 
-fun Project.configureNeoForgeLoader(loader: String, isActive: Boolean) {
+fun Project.configureNeoForgeLoader(loader: String) {
     val javaVersion = mod.prop("java_version")
     val projectName = name
 
@@ -29,15 +26,10 @@ fun Project.configureNeoForgeLoader(loader: String, isActive: Boolean) {
 
     extensions.configure<SourceSetContainer>("sourceSets") {
         named("main") {
+            java.srcDir(rootProject.file("common/src/main/java"))
             resources.srcDir(rootProject.file("common/src/main/resources"))
-            resources.srcDir(rootProject.file("neoforge/src/main/resources"))
         }
     }
-
-    versionedJavaSources(
-        rootProject.file("common/src/main/java"),
-        rootProject.file("neoforge/src/main/java"),
-    )
 
     repositories {
         maven("https://maven.neoforged.net/releases/")
@@ -84,26 +76,6 @@ fun Project.configureNeoForgeLoader(loader: String, isActive: Boolean) {
         dependsOn("build")
     }
 
-    if (isActive) {
-        rootProject.tasks.register("buildActive") {
-            group = "project"
-            description = "Builds and collects active subproject artifacts."
-            dependsOn(buildAndCollect)
-        }
-
-        rootProject.tasks.register("testClient") {
-            group = "project"
-            description = "Launches the client for testing the active NeoForge version."
-            dependsOn(tasks.named("runClient"))
-        }
-
-        rootProject.tasks.register("testServer") {
-            group = "project"
-            description = "Launches the server for testing the active NeoForge version."
-            dependsOn(tasks.named("runServer"))
-        }
-    }
-
     tasks.named<ProcessResources>("processResources") {
         properties(
             listOf("META-INF/neoforge.mods.toml"),
@@ -127,7 +99,7 @@ fun Project.configureNeoForgeLoader(loader: String, isActive: Boolean) {
     }
 
     tasks.named("build") {
-        group = "versioned"
-        description = "Stonecutter target build task."
+        group = "build"
+        description = "Builds the NeoForge artifact."
     }
 }

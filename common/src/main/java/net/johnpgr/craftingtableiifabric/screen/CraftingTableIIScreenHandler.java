@@ -7,13 +7,6 @@ import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIISlot;
 import net.johnpgr.craftingtableiifabric.platform.Services;
 import net.johnpgr.craftingtableiifabric.recipe.CraftingTableIIRecipeManager;
 import net.minecraft.client.Minecraft;
-//? if >=1.21.3 {
-import net.minecraft.recipebook.ServerPlaceRecipe;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.StackedItemContents;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.display.RecipeDisplayId;
-//? }
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -25,24 +18,16 @@ import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-//? if <1.21.3 {
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.entity.player.StackedContents;
-//? }
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-//? if <1.21.3 {
 public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
-//? } else {
-public class CraftingTableIIScreenHandler extends RecipeBookMenu {
-//? }
     public static final int RESULT_INDEX = 0;
     public static final int INPUT_INDEX_START = 1;
     public static final int INPUT_INDEX_END = 9;
@@ -110,11 +95,7 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu {
         }
     }
 
-    //? if <1.21.3 {
     private void addRecipeItem(ItemStack stack, RecipeHolder<?> recipe) {
-    //? } else {
-    private void addRecipeItem(ItemStack stack, RecipeDisplayId recipe) {
-    //? }
         if (recipe == null) {
             return;
         }
@@ -143,11 +124,7 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu {
             return;
         }
 
-        //? if <1.21.3 {
         RecipeHolder<?> recipe = slot.getRecipe();
-        //? } else {
-        RecipeDisplayId recipe = slot.getRecipe();
-        //? }
         if (recipe == null) {
             return;
         }
@@ -157,7 +134,7 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu {
         lastCraftedItem = slot.getItem();
     }
 
-    private Optional<CraftingTableIIRecipeManager.RecipeResult> validateLastCrafted(List<RecipeCollection> results) {
+    private Optional<CraftingTableIIRecipeManager.RecipeResult> validateLastCrafted(List<net.minecraft.client.gui.screens.recipebook.RecipeCollection> results) {
         for (var result : results) {
             var pair = CraftingTableIIRecipeManager.firstResult(result);
             if (ItemStack.isSameItem(pair.stack(), lastCraftedItem)) {
@@ -196,106 +173,52 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu {
         }
     }
 
-    //? if <1.21.3 {
     @Override
     public boolean shouldMoveToInventory(int index) {
         return index != getResultSlotIndex();
     }
-    //? }
 
     @Override
     public boolean stillValid(Player player) {
         return AbstractContainerMenu.stillValid(access, player, CraftingTableII.BLOCK);
     }
 
-    //? if <1.21.3 {
     @Override
-    public void fillCraftSlotsStackedContents(StackedContents finder) {
-        input.fillStackedContents(finder);
-    }
-    //? } else {
-    @Override
-    public void fillCraftSlotsStackedContents(StackedItemContents finder) {
+    public void fillCraftSlotsStackedContents(net.minecraft.world.entity.player.StackedContents finder) {
         input.fillStackedContents(finder);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public PostPlaceAction handlePlacement(boolean useMaxItems, boolean isCreative, RecipeHolder<?> recipe, ServerLevel level, Inventory playerInventory) {
-        RecipeHolder<CraftingRecipe> craftingRecipe = (RecipeHolder<CraftingRecipe>) recipe;
-        List<Slot> inputSlots = this.slots.subList(INPUT_INDEX_START, INPUT_INDEX_END + 1);
-        return ServerPlaceRecipe.placeRecipe(
-                new ServerPlaceRecipe.CraftingMenuAccess<>() {
-                    @Override
-                    public void fillCraftSlotsStackedContents(StackedItemContents stackedItemContents) {
-                        CraftingTableIIScreenHandler.this.fillCraftSlotsStackedContents(stackedItemContents);
-                    }
-
-                    @Override
-                    public void clearCraftingContent() {
-                        CraftingTableIIScreenHandler.this.clearCraftingContent();
-                    }
-
-                    @Override
-                    public boolean recipeMatches(RecipeHolder<CraftingRecipe> recipe) {
-                        return recipe.value().matches(CraftingTableIIScreenHandler.this.input.asCraftInput(), level);
-                    }
-                },
-                getGridWidth(),
-                getGridHeight(),
-                inputSlots,
-                inputSlots,
-                playerInventory,
-                craftingRecipe,
-                useMaxItems,
-                isCreative
-        );
-    }
-    //? }
-
-    //? if <1.21.3 {
-    @Override
-    //? }
     public void clearCraftingContent() {
         input.clearContent();
         result.clearContent();
     }
 
-    //? if <1.21.3 {
     @Override
     public boolean recipeMatches(RecipeHolder<CraftingRecipe> recipe) {
         return recipe.value().matches(input.asCraftInput(), player.level());
     }
-    //? }
 
     public void updateResultSlot(ItemStack itemStack) {
         result.setItem(0, itemStack);
     }
 
-    //? if <1.21.3 {
     @Override
-    //? }
     public int getResultSlotIndex() {
         return 0;
     }
 
-    //? if <1.21.3 {
     @Override
-    //? }
     public int getGridWidth() {
         return input.getWidth();
     }
 
-    //? if <1.21.3 {
     @Override
-    //? }
     public int getGridHeight() {
         return input.getHeight();
     }
 
-    //? if <1.21.3 {
     @Override
-    //? }
     public int getSize() {
         return 10;
     }
