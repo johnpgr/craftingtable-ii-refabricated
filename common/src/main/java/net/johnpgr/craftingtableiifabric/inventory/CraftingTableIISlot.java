@@ -7,9 +7,9 @@ import net.minecraft.world.inventory.Slot;
 public class CraftingTableIISlot extends Slot {
     private final int containerSlot;
 
-    public CraftingTableIISlot(CraftingTableIIInventory inventory, int index, int x, int y) {
-        super(inventory, index, x, y);
-        this.containerSlot = index;
+    public CraftingTableIISlot(CraftingTableIIInventory inventory, int slotIndex, int x, int y) {
+        super(inventory, slotIndex, x, y);
+        containerSlot = slotIndex;
     }
 
     @Override

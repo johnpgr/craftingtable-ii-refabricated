@@ -29,13 +29,13 @@ public class CraftingTableIIEntityRenderer implements BlockEntityRenderer<Crafti
 
     public CraftingTableIIEntityRenderer(BlockEntityRendererProvider.Context context) {
         var modelSet = context.getModelSet();
-        this.table = modelSet.bakeLayer(CraftingTableIIEntityModel.TABLE_MODEL_LAYER);
-        this.door = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_MODEL_LAYER);
-        this.doorSide = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_SIDE_MODEL_LAYER);
-        this.doorSide1 = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_SIDE1_MODEL_LAYER);
-        this.doorTopSide = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_TOP_SIDE_MODEL_LAYER);
-        this.doorTopSide1 = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_TOP_SIDE1_MODEL_LAYER);
-        this.book = modelSet.bakeLayer(CraftingTableIIEntityModel.BOOK_MODEL_LAYER);
+        table = modelSet.bakeLayer(CraftingTableIIEntityModel.TABLE_MODEL_LAYER);
+        door = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_MODEL_LAYER);
+        doorSide = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_SIDE_MODEL_LAYER);
+        doorSide1 = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_SIDE1_MODEL_LAYER);
+        doorTopSide = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_TOP_SIDE_MODEL_LAYER);
+        doorTopSide1 = modelSet.bakeLayer(CraftingTableIIEntityModel.DOOR_TOP_SIDE1_MODEL_LAYER);
+        book = modelSet.bakeLayer(CraftingTableIIEntityModel.BOOK_MODEL_LAYER);
     }
 
     @Override
@@ -71,13 +71,13 @@ public class CraftingTableIIEntityRenderer implements BlockEntityRenderer<Crafti
     }
 
     private void renderModels(float rotation, PoseStack poseStack, VertexConsumer consumer, int light, int overlay) {
-        this.door.getChild("door").setRotation(0f, rotation, 0f);
-        this.table.render(poseStack, consumer, light, overlay);
-        this.door.render(poseStack, consumer, light, overlay);
-        this.doorSide.render(poseStack, consumer, light, overlay);
-        this.doorSide1.render(poseStack, consumer, light, overlay);
-        this.doorTopSide.render(poseStack, consumer, light, overlay);
-        this.doorTopSide1.render(poseStack, consumer, light, overlay);
-        this.book.render(poseStack, consumer, light, overlay);
+        door.getChild("door").setRotation(0f, rotation, 0f);
+        table.render(poseStack, consumer, light, overlay);
+        door.render(poseStack, consumer, light, overlay);
+        doorSide.render(poseStack, consumer, light, overlay);
+        doorSide1.render(poseStack, consumer, light, overlay);
+        doorTopSide.render(poseStack, consumer, light, overlay);
+        doorTopSide1.render(poseStack, consumer, light, overlay);
+        book.render(poseStack, consumer, light, overlay);
     }
 }

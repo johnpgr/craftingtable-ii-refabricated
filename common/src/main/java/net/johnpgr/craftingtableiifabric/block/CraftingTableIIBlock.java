@@ -7,7 +7,6 @@ import net.johnpgr.craftingtableiifabric.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CraftingTableIIBlock extends BaseEntityBlock {
@@ -41,7 +41,7 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
         this(Properties.ofFullCopy(Blocks.CRAFTING_TABLE));
     }
 
-    @Override
+    @Override @NotNull
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return simpleCodec(CraftingTableIIBlock::new);
     }
@@ -60,17 +60,17 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
         return defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
     }
 
-    @Override
+    @Override @NotNull
     public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(BlockStateProperties.HORIZONTAL_FACING, rotation.rotate(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
     }
 
-    @Override
+    @Override @NotNull
     public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
     }
 
-    @Override
+    @Override @NotNull
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
@@ -80,12 +80,12 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
         return true;
     }
 
-    @Override
+    @Override @NotNull
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
-    @Override
+    @Override @NotNull
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
@@ -102,7 +102,7 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
         return createTickerHelper(type, CraftingTableII.ENTITY_TYPE, CraftingTableIIEntity::tick);
     }
 
-    @Override
+    @Override @NotNull
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;

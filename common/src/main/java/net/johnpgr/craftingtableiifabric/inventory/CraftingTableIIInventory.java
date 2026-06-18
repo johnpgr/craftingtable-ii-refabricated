@@ -19,8 +19,8 @@ public class CraftingTableIIInventory implements Container {
     private final CraftingTableIIEntity entity;
     private final List<RecipeHolder<?>> recipes = new ArrayList<>(Collections.nCopies(SIZE, null));
 
-    public CraftingTableIIInventory(CraftingTableIIEntity entity) {
-        this.entity = entity;
+    public CraftingTableIIInventory(CraftingTableIIEntity blockEntity) {
+        entity = blockEntity;
     }
 
     @Override

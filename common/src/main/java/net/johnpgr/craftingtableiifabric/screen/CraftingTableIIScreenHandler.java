@@ -10,31 +10,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.inventory.ClickType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
-    public static final int RESULT_INDEX = 0;
-    public static final int INPUT_INDEX_START = 1;
-    public static final int INPUT_INDEX_END = 9;
-    public static final int PLAYER_INVENTORY_INDEX_START = 9;
-    public static final int PLAYER_INVENTORY_INDEX_END = 36;
-    public static final int PLAYER_HOTBAR_INDEX_START = 36;
-    public static final int PLAYER_HOTBAR_INDEX_END = 45;
     public static final int CTII_INVENTORY_INDEX_START = 45;
     public static final int CTII_INVENTORY_INDEX_END = 85;
 
@@ -48,11 +42,12 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
     private int cachedInvChangeCount = -1;
     private final ContainerLevelAccess access;
 
-    public CraftingTableIIScreenHandler(int containerId, Inventory playerInventory, CraftingTableIIEntity entity, ContainerLevelAccess access) {
+    @SuppressWarnings("resource")
+    public CraftingTableIIScreenHandler(int containerId, Inventory playerInventory, CraftingTableIIEntity entity, ContainerLevelAccess cla) {
         super(CraftingTableII.MENU_TYPE, containerId);
-        this.access = access;
-        this.inventory = new CraftingTableIIInventory(entity);
-        this.player = playerInventory.player;
+        access = cla;
+        inventory = new CraftingTableIIInventory(entity);
+        player = playerInventory.player;
 
         addSlot(new ResultSlot(player, input, result, 0, -999, -999));
 
@@ -113,6 +108,7 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
     }
 
     @Override
+    @SuppressWarnings("resource")
     public void clicked(int slotIndex, int button, ClickType clickType, Player player) {
         super.clicked(slotIndex, button, clickType, player);
 
@@ -134,9 +130,12 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
         lastCraftedItem = slot.getItem();
     }
 
-    private Optional<CraftingTableIIRecipeManager.RecipeResult> validateLastCrafted(List<net.minecraft.client.gui.screens.recipebook.RecipeCollection> results) {
+    private Optional<CraftingTableIIRecipeManager.RecipeResult> validateLastCrafted(
+            CraftingTableIIRecipeManager recipeManager,
+            List<net.minecraft.client.gui.screens.recipebook.RecipeCollection> results
+    ) {
         for (var result : results) {
-            var pair = CraftingTableIIRecipeManager.firstResult(result);
+            var pair = recipeManager.firstResult(result);
             if (ItemStack.isSameItem(pair.stack(), lastCraftedItem)) {
                 return Optional.of(pair);
             }
@@ -153,7 +152,7 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
         List<CraftingTableIIRecipeManager.RecipeResult> newList = new ArrayList<>();
 
         if (recipeManager != null) {
-            validateLastCrafted(recipeManager.results).ifPresentOrElse(
+            validateLastCrafted(recipeManager, recipeManager.results).ifPresentOrElse(
                     newList::add,
                     () -> lastCraftedItem = ItemStack.EMPTY
             );
@@ -161,7 +160,7 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
             int max = CraftingTableIIInventory.SIZE - newList.size();
             for (int i = currentListIndex; i < currentListIndex + max; i++) {
                 if (i < recipeManager.results.size()) {
-                    newList.add(CraftingTableIIRecipeManager.firstResult(recipeManager.results.get(i)));
+                    newList.add(recipeManager.firstResult(recipeManager.results.get(i)));
                 } else {
                     break;
                 }
@@ -223,12 +222,12 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
         return 10;
     }
 
-    @Override
+    @Override @NotNull
     public RecipeBookType getRecipeBookType() {
         return RecipeBookType.CRAFTING;
     }
 
-    @Override
+    @Override @NotNull
     public ItemStack quickMoveStack(Player player, int invSlot) {
         return ItemStack.EMPTY;
     }

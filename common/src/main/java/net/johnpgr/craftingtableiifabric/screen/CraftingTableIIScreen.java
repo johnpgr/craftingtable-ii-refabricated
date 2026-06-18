@@ -5,7 +5,6 @@ import net.johnpgr.craftingtableiifabric.CraftingTableII;
 import net.johnpgr.craftingtableiifabric.description.CraftingTableIIDescriptions;
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIIInventory;
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIISlot;
-import net.johnpgr.craftingtableiifabric.recipe.CraftingTableIIRecipeManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -32,80 +31,80 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
     }
 
     private int getScrollBarStartY() {
-        return this.topPos + 17;
+        return topPos + 17;
     }
 
     private int getScrollBarEndY() {
-        return this.getScrollBarStartY() + 90;
+        return getScrollBarStartY() + 90;
     }
 
     private int getScrollButtonY() {
-        int start = this.getScrollBarStartY();
-        int end = this.getScrollBarEndY();
-        return this.topPos + 17 + (int) ((end - start - 17) * scrollPosition);
+        int start = getScrollBarStartY();
+        int end = getScrollBarEndY();
+        return topPos + 17 + (int) ((end - start - 17) * scrollPosition);
     }
 
     private int getScrollButtonX() {
-        return this.leftPos + 154;
+        return leftPos + 154;
     }
 
     private boolean hasScrollbar() {
-        return this.menu.recipeManager.results.size() > CraftingTableIIInventory.SIZE;
+        return menu.recipeManager.results.size() > CraftingTableIIInventory.SIZE;
     }
 
     private boolean isClickInScrollbar(double mouseX, double mouseY) {
-        return mouseX >= this.getScrollButtonX() && mouseX <= this.getScrollButtonX() + 16
-                && mouseY >= this.getScrollBarStartY() && mouseY <= this.getScrollBarEndY();
+        return mouseX >= getScrollButtonX() && mouseX <= getScrollButtonX() + 16
+                && mouseY >= getScrollBarStartY() && mouseY <= getScrollBarEndY();
     }
 
     @Override
     protected void init() {
         super.init();
-        if (this.minecraft != null) {
-            CraftingTableIIDescriptions.ensureLoaded(this.minecraft);
+        if (minecraft != null) {
+            CraftingTableIIDescriptions.ensureLoaded(minecraft);
         }
-        this.imageHeight = 208;
-        this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 11;
-        this.inventoryLabelY = this.imageHeight - 97;
-        this.leftPos = (this.width - this.imageWidth) / 2;
-        this.topPos = (this.height - this.imageHeight) / 2;
+        imageHeight = 208;
+        titleLabelX = (imageWidth - font.width(title)) / 11;
+        inventoryLabelY = imageHeight - 97;
+        leftPos = (width - imageWidth) / 2;
+        topPos = (height - imageHeight) / 2;
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
+        renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            this.scrolling = false;
+            scrolling = false;
         }
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (!this.scrolling) {
+        if (!scrolling) {
             return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
         }
 
-        int start = this.getScrollBarStartY();
-        int end = this.getScrollBarEndY();
-        this.scrollPosition = (float) ((mouseY - start - 7.5f) / ((end - start) - 15.0f));
-        this.scrollPosition = Mth.clamp(this.scrollPosition, 0f, 1f);
+        int start = getScrollBarStartY();
+        int end = getScrollBarEndY();
+        scrollPosition = (float) ((mouseY - start - 7.5f) / ((end - start) - 15.0f));
+        scrollPosition = Mth.clamp(scrollPosition, 0f, 1f);
         scrollResults(scrollPosition);
         return true;
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.scrolling || button != 0 || !this.isClickInScrollbar(mouseX, mouseY)) {
+        if (scrolling || button != 0 || !isClickInScrollbar(mouseX, mouseY)) {
             return super.mouseClicked(mouseX, mouseY, button);
         }
 
-        this.scrolling = this.hasScrollbar();
+        scrolling = hasScrollbar();
         return true;
     }
 
@@ -119,23 +118,23 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
 
         int listIndex = j * 8;
         if (listIndex < results.size()) {
-            this.menu.currentListIndex = listIndex;
+            menu.currentListIndex = listIndex;
         }
 
-        this.menu.updateRecipes(false);
+        menu.updateRecipes(false);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        int craftableRecipesSize = this.menu.recipeManager.results.size();
+        int craftableRecipesSize = menu.recipeManager.results.size();
         if (craftableRecipesSize <= CraftingTableIIInventory.SIZE) {
             return false;
         }
 
-        double aX = mouseX - this.leftPos;
-        double aY = mouseY - this.topPos;
+        double aX = mouseX - leftPos;
+        double aY = mouseY - topPos;
 
-        if (aX >= 0 && aY >= 0 && aX < 176 && aY < this.imageHeight - 100) {
+        if (aX >= 0 && aY >= 0 && aX < 176 && aY < imageHeight - 100) {
             double i = (craftableRecipesSize + 8 - 1) / 8.0 - 5.0;
             double j = Mth.clamp(scrollY, -1.0, 1.0);
 
@@ -162,12 +161,12 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
 
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        int craftableRecipesSize = this.menu.recipeManager.results.size();
+        int craftableRecipesSize = menu.recipeManager.results.size();
 
         graphics.blit(
                 TEXTURE,
-                this.getScrollButtonX(),
-                this.getScrollButtonY(),
+                getScrollButtonX(),
+                getScrollButtonY(),
                 craftableRecipesSize <= CraftingTableIIInventory.SIZE ? 16 : 0,
                 208,
                 16,
@@ -220,10 +219,15 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
             for (int r = 0; r < ingredientStacks.size(); r++) {
                 ItemStack stack = ingredientStacks.get(r);
                 graphics.renderItem(stack, leftPos - 25, topPos + 5 + r * 18);
-                graphics.renderItemDecorations(this.font, stack, leftPos - 25, topPos + 5 + r * 18);
+                graphics.renderItemDecorations(font, stack, leftPos - 25, topPos + 5 + r * 18);
             }
 
-            ItemStack output = recipe.value().getResultItem(this.minecraft.level.registryAccess());
+            var client = minecraft;
+            if (client == null || client.level == null) {
+                continue;
+            }
+
+            ItemStack output = recipe.value().getResultItem(client.level.registryAccess());
 
             int titleX = leftPos - 118;
             int titleY = topPos + 9;
@@ -233,7 +237,7 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
                 titleText = titleText.substring(0, 16) + "...";
             }
 
-            graphics.drawString(this.font, titleText, titleX, titleY, 0xFFFFFF, false);
+            graphics.drawString(font, titleText, titleX, titleY, 0xFFFFFF, false);
 
             String description = CraftingTableIIDescriptions.descriptionsDict.getOrDefault(
                     output.getDescriptionId(), ""
@@ -247,11 +251,11 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
             graphics.pose().translate(titleX / scale, descY / scale, 0.0);
 
             for (int index = 0; index < chunks.size(); index++) {
-                graphics.drawString(this.font, chunks.get(index), 0, 40 + 10 * index, 0xFFFFFF, false);
+                graphics.drawString(font, chunks.get(index), 0, 40 + 10 * index, 0xFFFFFF, false);
             }
 
-            graphics.drawString(this.font, "Code name: ", 0, 268, 0xFFFFFF, false);
-            graphics.drawString(this.font, output.getItem().toString(), 0, 280, 0xFFFFFF, false);
+            graphics.drawString(font, "Code name: ", 0, 268, 0xFFFFFF, false);
+            graphics.drawString(font, output.getItem().toString(), 0, 280, 0xFFFFFF, false);
 
             graphics.pose().popPose();
         }
@@ -289,7 +293,7 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
         }
 
         if (!chunks.isEmpty()) {
-            String last = chunks.get(chunks.size() - 1);
+            String last = chunks.getLast();
             chunks.set(chunks.size() - 1, last.substring(0, last.length() - 1));
         }
 

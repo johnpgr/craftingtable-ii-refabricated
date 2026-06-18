@@ -1,7 +1,6 @@
 package net.johnpgr.craftingtableiifabric.recipe;
 
 import net.johnpgr.craftingtableiifabric.screen.CraftingTableIIScreenHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.StackedContents;
@@ -17,9 +16,9 @@ public class CraftingTableIIRecipeManager {
     private final StackedContents recipeMatcher = new StackedContents();
     public List<RecipeCollection> results = List.of();
 
-    public CraftingTableIIRecipeManager(CraftingTableIIScreenHandler screenHandler, LocalPlayer player) {
-        this.screenHandler = screenHandler;
-        this.player = player;
+    public CraftingTableIIRecipeManager(CraftingTableIIScreenHandler handler, LocalPlayer localPlayer) {
+        screenHandler = handler;
+        player = localPlayer;
     }
 
     public void refreshInputs() {
@@ -50,13 +49,13 @@ public class CraftingTableIIRecipeManager {
         results = filtered;
     }
 
-    public static RecipeResult firstResult(RecipeCollection collection) {
+    @SuppressWarnings("resource")
+    public RecipeResult firstResult(RecipeCollection collection) {
         RecipeHolder<?> recipeEntry = collection.getRecipes(true).getFirst();
-        ItemStack itemStack = recipeEntry.value().getResultItem(Minecraft.getInstance().level.registryAccess());
+        ItemStack itemStack = recipeEntry.value().getResultItem(player.level().registryAccess());
         return new RecipeResult(itemStack, recipeEntry);
     }
 
 
-    public record RecipeResult(ItemStack stack, RecipeHolder<?> recipe) {
-    }
+    public record RecipeResult(ItemStack stack, RecipeHolder<?> recipe) {}
 }
