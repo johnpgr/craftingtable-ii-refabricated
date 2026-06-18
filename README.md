@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/johnpgr/craftingtable-ii-refabricated/1.20.1/src/main/resources/assets/craftingtableiifabric/icon.png"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/johnpgr/craftingtable-ii-refabricated/refs/heads/1.21/common/src/main/resources/assets/craftingtableiifabric/icon.png"/></p>
 
 <p align="center"><strong>CraftingTable II</strong></p>
 
