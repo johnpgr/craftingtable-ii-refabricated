@@ -6,15 +6,12 @@
     ]
   },
   "criteria": {
-    "has_crafting_table_ii": {
+    "has_book": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:crafting_table"
-          },
-          {
-            "item": "minecraft:book"
+            "items": "minecraft:book"
           }
         ]
       }
@@ -28,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_crafting_table_ii",
+      "has_book",
       "has_the_recipe"
     ]
   ]

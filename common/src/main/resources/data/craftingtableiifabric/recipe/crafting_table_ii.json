@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    "minecraft:crafting_table",
-    "minecraft:book"
+    {
+      "item": "minecraft:crafting_table"
+    },
+    {
+      "item": "minecraft:book"
+    }
   ],
   "result": {
     "id": "craftingtableiifabric:crafting_table_ii",
