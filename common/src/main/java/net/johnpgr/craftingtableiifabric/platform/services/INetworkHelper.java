@@ -1,11 +1,19 @@
 package net.johnpgr.craftingtableiifabric.platform.services;
 
-import net.minecraft.resources.ResourceLocation;
+//? if <1.21.3 {
+import net.minecraft.world.item.crafting.RecipeHolder;
+//? } else {
+import net.minecraft.world.item.crafting.display.RecipeDisplayId;
+//? }
 
 public interface INetworkHelper {
     void registerPayloads();
 
     void registerServerReceiver();
 
-    void sendCraftPacket(ResourceLocation recipeId, int syncId, boolean quickCraft);
+    //? if <1.21.3 {
+    void sendCraftPacket(RecipeHolder<?> recipe, int syncId, boolean quickCraft);
+    //? } else {
+    void sendCraftPacket(RecipeDisplayId recipe, int syncId, boolean quickCraft);
+    //? }
 }

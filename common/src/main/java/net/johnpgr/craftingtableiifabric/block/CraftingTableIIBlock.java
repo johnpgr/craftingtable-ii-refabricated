@@ -6,6 +6,10 @@ import net.johnpgr.craftingtableiifabric.entity.CraftingTableIIEntity;
 import net.johnpgr.craftingtableiifabric.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+//? if >=1.21.3 {
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+//? }
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,6 +31,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import org.jetbrains.annotations.Nullable;
 
 public class CraftingTableIIBlock extends BaseEntityBlock {
@@ -38,7 +43,15 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
     }
 
     public CraftingTableIIBlock() {
-        this(Properties.ofFullCopy(Blocks.CRAFTING_TABLE));
+        this(defaultProperties());
+    }
+
+    private static Properties defaultProperties() {
+        var properties = Properties.ofFullCopy(Blocks.CRAFTING_TABLE);
+        //? if >=1.21.3 {
+        properties.setId(ResourceKey.create(Registries.BLOCK, CraftingTableII.id("crafting_table_ii")));
+        //? }
+        return properties;
     }
 
     @Override
@@ -52,7 +65,7 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction facing = context.getHorizontalDirection().getCounterClockWise();
         if (facing == Direction.NORTH || facing == Direction.SOUTH) {
             facing = facing.getOpposite();
@@ -72,13 +85,24 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
+        //? if <1.21.4 {
         return RenderShape.ENTITYBLOCK_ANIMATED;
+        //? } else {
+        return RenderShape.MODEL;
+        //? }
     }
 
+    //? if <1.21.3 {
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return true;
     }
+    //? } else {
+    @Override
+    protected boolean propagatesSkylightDown(BlockState state) {
+        return true;
+    }
+    //? }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {

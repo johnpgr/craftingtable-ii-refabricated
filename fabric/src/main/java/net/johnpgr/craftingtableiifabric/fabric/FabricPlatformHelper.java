@@ -2,6 +2,7 @@ package net.johnpgr.craftingtableiifabric.fabric;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.johnpgr.craftingtableiifabric.CraftingTableII;
@@ -11,6 +12,10 @@ import net.johnpgr.craftingtableiifabric.screen.CraftingTableIIScreenHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+//? if >=1.21.3 {
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+//? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,7 +34,7 @@ import java.io.File;
 public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public void bootstrap() {
-        CraftingTableII.ENTITY_TYPE = BlockEntityType.Builder.of(
+        CraftingTableII.ENTITY_TYPE = FabricBlockEntityTypeBuilder.create(
                 CraftingTableIIEntity::new,
                 CraftingTableII.BLOCK
         ).build(null);
@@ -52,10 +57,16 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 blockId,
                 CraftingTableII.BLOCK
         );
+        var blockItemProperties = new Item.Properties();
+        //? if >=1.21.3 {
+        blockItemProperties
+                .setId(ResourceKey.create(Registries.ITEM, blockId))
+                .useBlockDescriptionPrefix();
+        //? }
         Registry.register(
                 BuiltInRegistries.ITEM,
                 blockId,
-                new BlockItem(CraftingTableII.BLOCK, new Item.Properties())
+                new BlockItem(CraftingTableII.BLOCK, blockItemProperties)
         );
         Registry.register(
                 BuiltInRegistries.BLOCK_ENTITY_TYPE,

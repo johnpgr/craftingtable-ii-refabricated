@@ -35,6 +35,12 @@ run/
 runs/
 **/runs/
 
+# stonecutter
+
+versions/
+!versions/current
+
+
 # java
 
 hs_err_*.log

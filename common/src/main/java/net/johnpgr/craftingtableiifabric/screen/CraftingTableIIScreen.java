@@ -1,20 +1,33 @@
 package net.johnpgr.craftingtableiifabric.screen;
 
+//? if <1.21.3 {
 import com.mojang.blaze3d.systems.RenderSystem;
+//? }
 import net.johnpgr.craftingtableiifabric.CraftingTableII;
 import net.johnpgr.craftingtableiifabric.description.CraftingTableIIDescriptions;
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIIInventory;
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIISlot;
+import net.johnpgr.craftingtableiifabric.recipe.CraftingTableIIRecipeManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+//? if <1.21.3 {
 import net.minecraft.client.renderer.GameRenderer;
+//? }
+//? if >=1.21.3 {
+import net.minecraft.client.renderer.RenderType;
+//? }
+//? if >=1.21.6 {
+import net.minecraft.client.renderer.RenderPipelines;
+//? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+//? if <1.21.3 {
 import net.minecraft.world.item.crafting.Ingredient;
+//? }
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,12 +161,21 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
         return false;
     }
 
+    //? if <1.21.6 {
     @Override
     protected void containerTick() {
         super.containerTick();
         menu.tick();
     }
+    //? } else {
+    @Override
+    protected void handledScreenTick() {
+        super.handledScreenTick();
+        menu.tick();
+    }
+    //? }
 
+    //? if <1.21.3 {
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -200,7 +222,14 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
                     continue;
                 }
 
+                //? if <1.21.5 {
                 ItemStack item = ingredient.getItems()[0];
+                //? } else {
+                ItemStack item = ingredient.getItems().length > 0 ? ingredient.getItems()[0] : ItemStack.EMPTY;
+                if (item.isEmpty()) {
+                    continue;
+                }
+                //? }
                 int index = -1;
                 for (int j = 0; j < ingredientStacks.size(); j++) {
                     if (ItemStack.isSameItem(ingredientStacks.get(j), item)) {
@@ -255,6 +284,146 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
             graphics.pose().popPose();
         }
     }
+    //? } elif <1.21.6 {
+    @Override
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        graphics.blit(RenderType::guiTextured, TEXTURE, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
+
+        int craftableRecipesSize = this.menu.recipeManager.results.size();
+
+        graphics.blit(
+                RenderType::guiTextured,
+                TEXTURE,
+                this.getScrollButtonX(),
+                this.getScrollButtonY(),
+                craftableRecipesSize <= CraftingTableIIInventory.SIZE ? 16f : 0f,
+                208f,
+                16,
+                16,
+                256,
+                256
+        );
+
+        for (int i = CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_START; i <= CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_END; i++) {
+            if (!(menu.getSlot(i) instanceof CraftingTableIISlot slot)) {
+                continue;
+            }
+
+            if (!isMouseOverSlot(slot, mouseX, mouseY) || !slot.hasItem()) {
+                continue;
+            }
+
+            graphics.blit(RenderType::guiTextured, DESCRIPTION_TEXTURE, leftPos - 124, topPos, 0f, 0f, 121, 162, 256, 256);
+
+            ItemStack output = slot.getItem();
+            if (output.isEmpty()) {
+                continue;
+            }
+
+            int titleX = leftPos - 118;
+            int titleY = topPos + 9;
+
+            String titleText = output.getHoverName().getString();
+            if (titleText.length() > 16) {
+                titleText = titleText.substring(0, 16) + "...";
+            }
+
+            graphics.drawString(this.font, titleText, titleX, titleY, 0xFFFFFF, false);
+
+            String description = CraftingTableIIDescriptions.descriptionsDict.getOrDefault(
+                    output.getItem().getDescriptionId(), ""
+            );
+            List<String> chunks = chunkDescription(description);
+            int descY = titleY + 2;
+            float scale = 0.5f;
+
+            graphics.pose().pushPose();
+            graphics.pose().scale(scale, scale, 1.0f);
+            graphics.pose().translate(titleX / scale, descY / scale, 0.0);
+
+            for (int index = 0; index < chunks.size(); index++) {
+                graphics.drawString(this.font, chunks.get(index), 0, 40 + 10 * index, 0xFFFFFF, false);
+            }
+
+            graphics.drawString(this.font, "Code name: ", 0, 268, 0xFFFFFF, false);
+            graphics.drawString(this.font, output.getItem().toString(), 0, 280, 0xFFFFFF, false);
+
+            graphics.pose().popPose();
+        }
+    }
+    //? } else {
+    @Override
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        if (this.minecraft == null) {
+            return;
+        }
+
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
+
+        int craftableRecipesSize = this.menu.recipeManager.results.size();
+        float scrollU = craftableRecipesSize <= CraftingTableIIInventory.SIZE ? 16f : 0f;
+
+        graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                TEXTURE,
+                this.getScrollButtonX(),
+                this.getScrollButtonY(),
+                scrollU,
+                208f,
+                16,
+                16,
+                256,
+                256
+        );
+
+        for (int i = CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_START; i <= CraftingTableIIScreenHandler.CTII_INVENTORY_INDEX_END; i++) {
+            if (!(menu.getSlot(i) instanceof CraftingTableIISlot slot)) {
+                continue;
+            }
+
+            if (!isMouseOverSlot(slot, mouseX, mouseY) || !slot.hasItem()) {
+                continue;
+            }
+
+            graphics.blit(RenderPipelines.GUI_TEXTURED, DESCRIPTION_TEXTURE, leftPos - 124, topPos, 0f, 0f, 121, 162, 256, 256);
+
+            ItemStack output = slot.getItem();
+            if (output.isEmpty()) {
+                continue;
+            }
+
+            int titleX = leftPos - 118;
+            int titleY = topPos + 9;
+
+            String titleText = output.getHoverName().getString();
+            if (titleText.length() > 16) {
+                titleText = titleText.substring(0, 16) + "...";
+            }
+
+            graphics.drawString(this.font, titleText, titleX, titleY, 0xFFFFFF, false);
+
+            String description = CraftingTableIIDescriptions.descriptionsDict.getOrDefault(
+                    output.getItem().getDescriptionId(), ""
+            );
+            List<String> chunks = chunkDescription(description);
+            int descY = titleY + 2;
+            float scale = 0.5f;
+
+            graphics.pose().pushMatrix();
+            graphics.pose().scale(scale, scale);
+            graphics.pose().translate(titleX / scale, descY / scale);
+
+            for (int index = 0; index < chunks.size(); index++) {
+                graphics.drawString(this.font, chunks.get(index), 0, 40 + 10 * index, 0xFFFFFF, false);
+            }
+
+            graphics.drawString(this.font, "Code name: ", 0, 268, 0xFFFFFF, false);
+            graphics.drawString(this.font, output.getItem().toString(), 0, 280, 0xFFFFFF, false);
+
+            graphics.pose().popMatrix();
+        }
+    }
+    //? }
 
     private boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {
         int aX = mouseX - leftPos;

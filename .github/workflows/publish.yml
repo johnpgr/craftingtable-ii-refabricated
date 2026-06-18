@@ -22,7 +22,7 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
       - name: build
-        run: ./gradlew build github curseforge modrinth --stacktrace
+        run: ./gradlew build publishMods github --stacktrace
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.GH_API_KEY }}
