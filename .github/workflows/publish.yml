@@ -1,6 +1,9 @@
 name: publish
 on: [ workflow_dispatch ]
 
+permissions:
+  contents: write
+
 jobs:
   release:
     strategy:
@@ -25,6 +28,6 @@ jobs:
         run: ./gradlew build publishMods github --stacktrace
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ secrets.GH_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
