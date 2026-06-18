@@ -60,13 +60,13 @@ public final class CraftingTableIIDescriptions {
         var resourceManager = client.getResourceManager();
         String currentLang = client.getLanguageManager().getSelected();
         Optional<Resource> descriptionResource = resourceManager.getResource(
-                ResourceLocation.fromNamespaceAndPath(CraftingTableII.MOD_ID, "descriptions/" + currentLang + ".json")
+                new ResourceLocation(CraftingTableII.MOD_ID, "descriptions/" + currentLang + ".json")
         );
 
         if (descriptionResource.isEmpty()) {
             currentLang = FALLBACK_LANG;
             descriptionResource = resourceManager.getResource(
-                    ResourceLocation.fromNamespaceAndPath(CraftingTableII.MOD_ID, "descriptions/" + FALLBACK_LANG + ".json")
+                    new ResourceLocation(CraftingTableII.MOD_ID, "descriptions/" + FALLBACK_LANG + ".json")
             );
         }
 

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.RecipeBookMenu;
@@ -19,16 +20,15 @@ import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, CraftingRecipe> {
+public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingContainer> {
     public static final int CTII_INVENTORY_INDEX_START = 45;
     public static final int CTII_INVENTORY_INDEX_END = 85;
 
@@ -90,7 +90,7 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
         }
     }
 
-    private void addRecipeItem(ItemStack stack, RecipeHolder<?> recipe) {
+    private void addRecipeItem(ItemStack stack, Recipe<?> recipe) {
         if (recipe == null) {
             return;
         }
@@ -120,7 +120,7 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
             return;
         }
 
-        RecipeHolder<?> recipe = slot.getRecipe();
+        Recipe<?> recipe = slot.getRecipe();
         if (recipe == null) {
             return;
         }
@@ -194,8 +194,8 @@ public class CraftingTableIIScreenHandler extends RecipeBookMenu<CraftingInput, 
     }
 
     @Override
-    public boolean recipeMatches(RecipeHolder<CraftingRecipe> recipe) {
-        return recipe.value().matches(input.asCraftInput(), player.level());
+    public boolean recipeMatches(Recipe<? super CraftingContainer> recipe) {
+        return recipe.matches(input, player.level());
     }
 
     public void updateResultSlot(ItemStack itemStack) {

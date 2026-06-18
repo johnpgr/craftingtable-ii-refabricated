@@ -1,8 +1,8 @@
 package net.johnpgr.craftingtableiifabric;
 
 import net.johnpgr.craftingtableiifabric.neoforge.CraftingTableIINeoForge;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
 
 @Mod(CraftingTableII.MOD_ID)
 public class CraftingTableIIMod {

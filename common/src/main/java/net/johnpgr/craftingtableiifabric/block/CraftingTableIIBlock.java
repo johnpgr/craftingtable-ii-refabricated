@@ -1,12 +1,12 @@
 package net.johnpgr.craftingtableiifabric.block;
 
-import com.mojang.serialization.MapCodec;
 import net.johnpgr.craftingtableiifabric.CraftingTableII;
 import net.johnpgr.craftingtableiifabric.entity.CraftingTableIIEntity;
 import net.johnpgr.craftingtableiifabric.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -38,12 +38,7 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
     }
 
     public CraftingTableIIBlock() {
-        this(Properties.ofFullCopy(Blocks.CRAFTING_TABLE));
-    }
-
-    @Override @NotNull
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return simpleCodec(CraftingTableIIBlock::new);
+        this(Properties.copy(Blocks.CRAFTING_TABLE));
     }
 
     @Override
@@ -103,7 +98,7 @@ public class CraftingTableIIBlock extends BaseEntityBlock {
     }
 
     @Override @NotNull
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }

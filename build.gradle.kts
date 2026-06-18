@@ -19,9 +19,10 @@ plugins {
 }
 
 val environment: Map<String, String> = System.getenv()
-val releaseName = "${findProperty("mod_name")} ${version.toString().split('+')[0]}"
+val publishVersion = findProperty("mod.version") as String
+val releaseName = "${findProperty("mod_name")} $publishVersion"
 
-fun changeLog(): String = file("changelogs/${version}.md").readText()
+fun changeLog(): String = file("changelogs/$publishVersion.md").readText()
 
 fun releaseBranch(): String {
     environment["GITHUB_REF"]?.let { ref ->
@@ -52,7 +53,7 @@ gradle.projectsEvaluated {
             accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
             file.set(fabricReleaseJar.flatMap { (it as AbstractArchiveTask).archiveFile })
             displayName.set(releaseName)
-            version.set(project.version.toString())
+            version.set(publishVersion)
             type.set(STABLE)
             modLoaders.add("fabric")
             minecraftVersions.add(findProperty("minecraft_version") as String)
@@ -64,7 +65,7 @@ gradle.projectsEvaluated {
             accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
             file.set(neoforgeReleaseJar.flatMap { (it as Jar).archiveFile })
             displayName.set("$releaseName (NeoForge)")
-            version.set(project.version.toString())
+            version.set(publishVersion)
             type.set(STABLE)
             modLoaders.add("neoforge")
             minecraftVersions.add(findProperty("minecraft_version") as String)
@@ -75,7 +76,7 @@ gradle.projectsEvaluated {
             accessToken.set(providers.environmentVariable("CURSEFORGE_API_KEY"))
             file.set(fabricReleaseJar.flatMap { (it as AbstractArchiveTask).archiveFile })
             displayName.set(releaseName)
-            version.set(project.version.toString())
+            version.set(publishVersion)
             type.set(STABLE)
             modLoaders.add("fabric")
             minecraftVersions.add(findProperty("minecraft_version") as String)
@@ -89,7 +90,7 @@ gradle.projectsEvaluated {
             accessToken.set(providers.environmentVariable("CURSEFORGE_API_KEY"))
             file.set(neoforgeReleaseJar.flatMap { (it as Jar).archiveFile })
             displayName.set("$releaseName (NeoForge)")
-            version.set(project.version.toString())
+            version.set(publishVersion)
             type.set(STABLE)
             modLoaders.add("neoforge")
             minecraftVersions.add(findProperty("minecraft_version") as String)
@@ -111,7 +112,7 @@ gradle.projectsEvaluated {
         doLast {
             val github = GitHub.connectUsingOAuth(environment["GITHUB_TOKEN"])
             val repository = github.getRepository(environment["GITHUB_REPOSITORY"])
-            val releaseBuilder = GHReleaseBuilder(repository, version.toString())
+            val releaseBuilder = GHReleaseBuilder(repository, publishVersion)
             releaseBuilder.name(releaseName)
             releaseBuilder.body(changeLog())
             releaseBuilder.commitish(releaseBranch())

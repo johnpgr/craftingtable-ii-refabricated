@@ -1,9 +1,9 @@
 package net.johnpgr.craftingtableiifabric.neoforge;
 
 import net.johnpgr.craftingtableiifabric.CraftingTableII;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.loading.FMLPaths;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
 

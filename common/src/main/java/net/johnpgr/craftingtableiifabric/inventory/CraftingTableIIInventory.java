@@ -4,7 +4,7 @@ import net.johnpgr.craftingtableiifabric.entity.CraftingTableIIEntity;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class CraftingTableIIInventory implements Container {
     public static final int SIZE = ROWS * COLS;
 
     private final CraftingTableIIEntity entity;
-    private final List<RecipeHolder<?>> recipes = new ArrayList<>(Collections.nCopies(SIZE, null));
+    private final List<Recipe<?>> recipes = new ArrayList<>(Collections.nCopies(SIZE, null));
 
     public CraftingTableIIInventory(CraftingTableIIEntity blockEntity) {
         entity = blockEntity;
@@ -59,12 +59,12 @@ public class CraftingTableIIInventory implements Container {
         entity.setItem(slot, stack.copy());
     }
 
-    public void setItem(int slot, ItemStack stack, RecipeHolder<?> recipe) {
+    public void setItem(int slot, ItemStack stack, Recipe<?> recipe) {
         setItem(slot, stack);
         recipes.set(slot, recipe);
     }
 
-    public RecipeHolder<?> getRecipe(int slot) {
+    public Recipe<?> getRecipe(int slot) {
         if (slot < 0 || slot >= recipes.size()) {
             return null;
         }

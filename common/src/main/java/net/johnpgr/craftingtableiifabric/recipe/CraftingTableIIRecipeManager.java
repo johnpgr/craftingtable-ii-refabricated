@@ -5,7 +5,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +51,11 @@ public class CraftingTableIIRecipeManager {
 
     @SuppressWarnings("resource")
     public RecipeResult firstResult(RecipeCollection collection) {
-        RecipeHolder<?> recipeEntry = collection.getRecipes(true).getFirst();
-        ItemStack itemStack = recipeEntry.value().getResultItem(player.level().registryAccess());
+        Recipe<?> recipeEntry = collection.getRecipes(true).get(0);
+        ItemStack itemStack = recipeEntry.getResultItem(player.level().registryAccess());
         return new RecipeResult(itemStack, recipeEntry);
     }
 
 
-    public record RecipeResult(ItemStack stack, RecipeHolder<?> recipe) {}
+    public record RecipeResult(ItemStack stack, Recipe<?> recipe) {}
 }

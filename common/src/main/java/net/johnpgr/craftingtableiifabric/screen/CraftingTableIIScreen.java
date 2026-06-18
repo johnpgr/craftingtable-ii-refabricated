@@ -125,7 +125,7 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         int craftableRecipesSize = menu.recipeManager.results.size();
         if (craftableRecipesSize <= CraftingTableIIInventory.SIZE) {
             return false;
@@ -195,7 +195,7 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
 
             List<ItemStack> ingredientStacks = new ArrayList<>();
 
-            for (Ingredient ingredient : recipe.value().getIngredients()) {
+            for (Ingredient ingredient : recipe.getIngredients()) {
                 if (ingredient.isEmpty()) {
                     continue;
                 }
@@ -227,7 +227,7 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
                 continue;
             }
 
-            ItemStack output = recipe.value().getResultItem(client.level.registryAccess());
+            ItemStack output = recipe.getResultItem(client.level.registryAccess());
 
             int titleX = leftPos - 118;
             int titleY = topPos + 9;
@@ -293,7 +293,7 @@ public class CraftingTableIIScreen extends AbstractContainerScreen<CraftingTable
         }
 
         if (!chunks.isEmpty()) {
-            String last = chunks.getLast();
+            String last = chunks.get(chunks.size() - 1);
             chunks.set(chunks.size() - 1, last.substring(0, last.length() - 1));
         }
 

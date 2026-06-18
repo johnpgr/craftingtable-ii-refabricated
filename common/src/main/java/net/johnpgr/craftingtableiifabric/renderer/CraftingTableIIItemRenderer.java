@@ -44,7 +44,7 @@ public class CraftingTableIIItemRenderer extends BlockEntityWithoutLevelRenderer
         );
         renderer.render(
                 tableEntity,
-                instance.getTimer().getGameTimeDeltaPartialTick(true),
+                instance.getFrameTime(),
                 poseStack,
                 bufferSource,
                 packedLight,

@@ -1,7 +1,7 @@
 package net.johnpgr.craftingtableiifabric.inventory;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.inventory.Slot;
 
 public class CraftingTableIISlot extends Slot {
@@ -17,7 +17,7 @@ public class CraftingTableIISlot extends Slot {
         return false;
     }
 
-    public RecipeHolder<?> getRecipe() {
+    public Recipe<?> getRecipe() {
         return ((CraftingTableIIInventory) container).getRecipe(containerSlot);
     }
 }

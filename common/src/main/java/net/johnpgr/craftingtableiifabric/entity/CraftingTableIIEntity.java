@@ -3,7 +3,6 @@ package net.johnpgr.craftingtableiifabric.entity;
 import net.johnpgr.craftingtableiifabric.CraftingTableII;
 import net.johnpgr.craftingtableiifabric.inventory.CraftingTableIIInventory;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.ContainerHelper;
@@ -73,15 +72,15 @@ public class CraftingTableIIEntity extends BlockEntity implements WorldlyContain
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ContainerHelper.loadAllItems(tag, inventory, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ContainerHelper.loadAllItems(tag, inventory);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, inventory, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ContainerHelper.saveAllItems(tag, inventory);
     }
 
     @Override

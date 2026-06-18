@@ -12,6 +12,7 @@ import net.johnpgr.craftingtableiifabric.screen.CraftingTableIIScreenHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +36,8 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 CraftingTableII.BLOCK
         ).build(null);
 
-        CraftingTableII.MENU_TYPE = new ExtendedScreenHandlerType<>((syncId, playerInventory, pos) -> {
+        CraftingTableII.MENU_TYPE = new ExtendedScreenHandlerType<>((syncId, playerInventory, buf) -> {
+            BlockPos pos = buf.readBlockPos();
             var player = playerInventory.player;
             var level = player.level();
             var entity = (CraftingTableIIEntity) level.getBlockEntity(pos);
@@ -45,7 +47,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
                     entity,
                     ContainerLevelAccess.create(level, pos)
             );
-        }, BlockPos.STREAM_CODEC);
+        });
 
         var blockId = CraftingTableII.id("crafting_table_ii");
         Registry.register(
@@ -79,10 +81,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public void openMenu(ServerPlayer player, BlockPos pos) {
-        player.openMenu(new ExtendedScreenHandlerFactory<BlockPos>() {
+        player.openMenu(new ExtendedScreenHandlerFactory() {
             @Override
-            public BlockPos getScreenOpeningData(ServerPlayer player) {
-                return pos;
+            public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+                buf.writeBlockPos(pos);
             }
 
             @Override

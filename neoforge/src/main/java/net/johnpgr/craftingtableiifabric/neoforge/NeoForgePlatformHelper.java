@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -29,7 +30,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public void openMenu(ServerPlayer player, BlockPos pos) {
-        player.openMenu(new MenuProvider() {
+        NetworkHooks.openScreen(player, new MenuProvider() {
             @Override @NotNull
             public Component getDisplayName() {
                 return Component.translatable("screen." + CraftingTableII.MOD_ID + ".crafting_table_ii");

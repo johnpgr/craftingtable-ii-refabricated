@@ -2,62 +2,51 @@ package net.johnpgr.craftingtableiifabric.network;
 
 import net.johnpgr.craftingtableiifabric.CraftingTableII;
 import net.johnpgr.craftingtableiifabric.screen.CraftingTableIIScreenHandler;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.Optional;
 
-public record CraftingTableIIPayload(ResourceLocation recipe, int syncId,
-                                     boolean quickCraft) implements CustomPacketPayload {
-    public static final StreamCodec<RegistryFriendlyByteBuf, CraftingTableIIPayload> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
-            CraftingTableIIPayload::recipe,
-            ByteBufCodecs.VAR_INT,
-            CraftingTableIIPayload::syncId,
-            ByteBufCodecs.BOOL,
-            CraftingTableIIPayload::quickCraft,
-            CraftingTableIIPayload::new
-    );
+public record CraftingTableIIPayload(ResourceLocation recipe, int syncId, boolean quickCraft) {
+    public static final ResourceLocation ID = CraftingTableII.id("craft_packet");
 
-    public static final CustomPacketPayload.Type<CraftingTableIIPayload> TYPE = new CustomPacketPayload.Type<>(CraftingTableII.id("craft_packet"));
-
-    public static CraftingTableIIPayload fromRecipe(RecipeHolder<?> recipe, int syncId, boolean quickCraft) {
-        return new CraftingTableIIPayload(recipe.id(), syncId, quickCraft);
+    public static CraftingTableIIPayload fromRecipe(Recipe<?> recipe, int syncId, boolean quickCraft) {
+        return new CraftingTableIIPayload(recipe.getId(), syncId, quickCraft);
     }
 
-    @Override
-    @NotNull
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public static CraftingTableIIPayload read(FriendlyByteBuf buf) {
+        return new CraftingTableIIPayload(buf.readResourceLocation(), buf.readInt(), buf.readBoolean());
     }
 
+    public void write(FriendlyByteBuf buf) {
+        buf.writeResourceLocation(recipe);
+        buf.writeInt(syncId);
+        buf.writeBoolean(quickCraft);
+    }
+
+    @SuppressWarnings("unchecked")
     public static void handleCraft(CraftingTableIIPayload data, ServerPlayer player) {
         if (player.containerMenu.containerId != data.syncId() || !(player.containerMenu instanceof CraftingTableIIScreenHandler craftingScreenHandler)) {
             return;
         }
 
-        Optional<RecipeHolder<?>> optionalRecipe = player.server.getRecipeManager().byKey(data.recipe());
-        if (optionalRecipe.isEmpty() || !(optionalRecipe.get().value() instanceof CraftingRecipe craftingRecipe)) {
+        Optional<? extends Recipe<?>> optionalRecipe = player.server.getRecipeManager().byKey(data.recipe());
+        if (optionalRecipe.isEmpty() || !(optionalRecipe.get() instanceof CraftingRecipe)) {
             return;
         }
 
-        RecipeHolder<?> recipeHolder = optionalRecipe.get();
+        Recipe<net.minecraft.world.inventory.CraftingContainer> recipe = (Recipe<net.minecraft.world.inventory.CraftingContainer>) optionalRecipe.get();
 
-        craftingScreenHandler.handlePlacement(data.quickCraft(), recipeHolder, player);
+        craftingScreenHandler.handlePlacement(data.quickCraft(), recipe, player);
 
-        while (craftingRecipe.matches(craftingScreenHandler.input.asCraftInput(), player.level())) {
-            var craftInput = craftingScreenHandler.input.asCraftInput();
+        while (recipe.matches(craftingScreenHandler.input, player.level())) {
             ItemStack cursor = craftingScreenHandler.getCarried();
-            ItemStack output = craftingRecipe.assemble(craftInput, player.registryAccess());
+            ItemStack output = recipe.assemble(craftingScreenHandler.input, player.server.registryAccess());
 
             craftingScreenHandler.updateResultSlot(output);
 
