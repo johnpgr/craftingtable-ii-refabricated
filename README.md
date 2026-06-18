@@ -2,30 +2,46 @@
 <img src="https://raw.githubusercontent.com/johnpgr/craftingtable-ii-refabricated/1.20.1/src/main/resources/assets/craftingtableiifabric/icon.png"/>
 </p>
 
-<h3 align="center">CraftingTable II</h3>
-
-<p align="center">CraftingTable II Refabricated is a port of perky's CraftingTableII mod from back in the 1.0.0 - 1.2.3 era that got continued by CraftingTable III and CraftingTable IV, but stopped updating on 1.15.2</p>
+<h3 align="center">
+CraftingTable II
+</h3>
 
 <p align="center">
-<a title="Fabric API" href="https://github.com/FabricMC/fabric">
-    <img src="https://i.imgur.com/Ol1Tcf8.png" width="151" height="50" />
-  </a>
-  <a title="Fabric Language Kotlin" href="https://github.com/FabricMC/fabric-language-kotlin" target="_blank" rel="noopener noreferrer">
-    <img src="https://i.imgur.com/c1DH9VL.png" width="171" height="50" />
-  </a>
+CraftingTable II Refabricated is a port of perky's CraftingTableII mod from back in the 1.0.0 - 1.2.3 era that got continued by CraftingTable III and CraftingTable IV, but stopped updating on 1.15.2
 </p>
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/johnpgr/craftingtable-ii-refabricated/1.20.1/assets/recipe.png"/>
 </p>
 
-<p align="center">The Crafting Table II Block displays a list with everything you can currently craft with the items in your inventory.</p>
+<p align="center">
+The Crafting Table II Block displays a list with everything you can currently craft with the items in your inventory.
+</p>
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/johnpgr/craftingtable-ii-refabricated/1.20.1/assets/ctii.png"/>
 </p>
 
 
-<p align="center">Click on the item and the Crafting Table II will automatically craft it for you. Shift + click will craft the maximum amount possible.</p>
+<p align="center">
+Click on the item and the Crafting Table II will automatically craft it for you. Shift + click will craft the maximum amount possible.
+</p>
 
-<p align="center">As you add and remove items from your inventory the list of available items updates. Works with <em>any</em> recipe, that is <b>unlockable</b> by the player, including mods.</p>
+<p align="center">
+As you add and remove items from your inventory the list of available items updates. Works with <em>any</em> recipe, that is <b>unlockable</b> by the player, including mods.
+</p>
+
+<h3 align="center">Mod Versions notice</h3>
+<p align="center">
+For many months I had quit trying to update this mod and minecraft modding altogether
+due to having to fix this mod due to Mojang breaking everything in minecraft codebase on every new version.
+Starting from v2.0 now I will only support mc 1.20.1, 1.21.1 and maybe later v26.x. From now on I will also support Neoforge.
+</p>
+
+<h3 align="center">Refabricated?</h3>
+<p align="center">
+This is my first minecraft mod development experience. I started working on this with Fabric only because that was the modloader I used to play.
+Everything was done by hand and ofc porting old code from the original mod.
+Back then I had no idea how do properly setup a multi loader mod.
+I originally used Kotlin to code this mod, because since I was pretty much coding 100% of the lines by hand, I didn't want to use a language I hate working in (Java). However now we have AI assisted programming and I don't see a reason to make players need to download another mod dependency to play this mod here, so I ported the mod from Kotlin to Java to avoid that annoyance. And In the middle of doing that I also figured it would be even nicer of me to port it to Neoforge mod loader. But now the 'refabricated' name has no meaning.
+</p>
