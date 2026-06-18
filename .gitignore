@@ -1,6 +1,7 @@
 # gradle
 
 .gradle/
+**/build/
 build/
 out/
 classes/
@@ -28,9 +29,11 @@ bin/
 
 *.DS_Store
 
-# fabric
+# mod loader run directories
 
 run/
+runs/
+**/runs/
 
 # java
 
